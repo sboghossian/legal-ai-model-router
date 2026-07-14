@@ -1,5 +1,6 @@
 ---
 name: route-contract-review
+version: 0.1.0
 description: >
   Pick the right LLM for CONTRACT REVIEW — reviewing an existing agreement for risk, deviations
   from standard, missing protections, and internal contradictions, and proposing redlines.
@@ -9,6 +10,14 @@ description: >
   language), then recommends a primary model + fallback + what to avoid + what a human must verify.
   Use when someone asks "which model to review this contract / NDA / MSA", "best AI to redline",
   "route this contract review", or is about to review an agreement without a fixed model.
+triggers:
+  - which model to review this contract or NDA or MSA
+  - best AI to redline a contract
+  - route this contract review
+  - which LLM to assess an agreement for risk
+allowed-tools:
+  - AskUserQuestion
+  - Read
 license: AGPL-3.0-or-later
 ---
 

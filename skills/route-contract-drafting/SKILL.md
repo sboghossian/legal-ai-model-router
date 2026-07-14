@@ -1,5 +1,6 @@
 ---
 name: route-contract-drafting
+version: 0.1.0
 description: >
   Pick the right LLM for CONTRACT DRAFTING — generating, redlining, or rewriting contract
   language from instructions. Vendor-neutral routing grounded in mid-2026 legal benchmarks
@@ -8,6 +9,14 @@ description: >
   avoid + what a human must verify. Use when someone asks "which model should I use to draft
   this clause/agreement", "best AI for drafting contracts", "route this drafting task", or is
   about to generate/redline contract text and hasn't fixed a model.
+triggers:
+  - which model should I use to draft this clause or agreement
+  - best AI for drafting contracts
+  - route this drafting task
+  - which LLM to redline this contract
+allowed-tools:
+  - AskUserQuestion
+  - Read
 license: AGPL-3.0-or-later
 ---
 

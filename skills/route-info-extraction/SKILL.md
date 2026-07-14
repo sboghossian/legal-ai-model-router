@@ -1,5 +1,6 @@
 ---
 name: route-info-extraction
+version: 0.1.0
 description: >
   Pick the right LLM for LEGAL INFO EXTRACTION — pulling facts, clauses, dates, parties,
   obligations, and structured fields out of contracts and legal documents. Vendor-neutral routing
@@ -9,6 +10,14 @@ description: >
   someone asks "which model should I use to extract clauses/data from these documents", "best AI
   for contract data extraction", "route this extraction task", or is about to pull structured
   fields from legal docs without a fixed model.
+triggers:
+  - which model should I use to extract clauses or data from these documents
+  - best AI for contract data extraction
+  - route this extraction task
+  - pull structured fields from legal documents
+allowed-tools:
+  - AskUserQuestion
+  - Read
 license: AGPL-3.0-or-later
 ---
 

@@ -1,5 +1,6 @@
 ---
 name: route-legal-translation
+version: 0.1.0
 description: >
   Pick the right LLM for LEGAL TRANSLATION — translating contracts, statutes, case law, and legal
   correspondence across languages, including Arabic/MENA. Vendor-neutral routing triangulated from
@@ -10,6 +11,14 @@ description: >
   what a human must verify. Use when someone asks "which model to translate this contract/statute",
   "best AI for legal translation", "translate this legal doc to/from Arabic", or is about to
   machine-translate legal text without a fixed model.
+triggers:
+  - which model to translate this contract or statute
+  - best AI for legal translation
+  - translate this legal doc to or from Arabic
+  - route this legal translation task
+allowed-tools:
+  - AskUserQuestion
+  - Read
 license: AGPL-3.0-or-later
 ---
 

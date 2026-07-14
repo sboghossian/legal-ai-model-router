@@ -1,5 +1,6 @@
 ---
 name: legal-ai-model-router
+version: 0.1.0
 description: >
   Entry point for routing any legal task to the right LLM — like OpenRouter, but for legal work and
   grounded in mid-2026 legal benchmarks. Figures out which of five legal verticals the task belongs to
@@ -9,6 +10,14 @@ description: >
   "which model / LLM should I use for this legal task", "route this legal work", "best AI model for
   [legal task]", "pick a model for me", or has a legal task and no fixed model. Dispatches to the
   route-* vertical skills for the detailed pick.
+triggers:
+  - which model or LLM should I use for this legal task
+  - route this legal work to the right model
+  - best AI model for a legal task
+  - pick a model for me
+allowed-tools:
+  - AskUserQuestion
+  - Read
 license: AGPL-3.0-or-later
 ---
 

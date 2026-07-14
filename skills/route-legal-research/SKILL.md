@@ -1,5 +1,6 @@
 ---
 name: route-legal-research
+version: 0.1.0
 description: >
   Pick the right LLM for LEGAL RESEARCH & ANALYSIS — issue-spotting, rule application, case/statute
   analysis, memos, and multi-step agentic research. Vendor-neutral routing grounded in mid-2026
@@ -8,6 +9,14 @@ description: >
   recommends a primary model + fallback + what to avoid + what a human must verify. Use when someone
   asks "which model for legal research / case analysis / a memo", "best AI for legal reasoning",
   "route this research task", or is starting legal analysis without a fixed model.
+triggers:
+  - which model for legal research or case analysis or a memo
+  - best AI for legal reasoning
+  - route this research task
+  - which LLM for issue-spotting or rule application
+allowed-tools:
+  - AskUserQuestion
+  - Read
 license: AGPL-3.0-or-later
 ---
 
