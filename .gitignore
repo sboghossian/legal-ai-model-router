@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# iCloud sync cruft
+*.icloud
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Scratch
+scratch/
+tmp/
