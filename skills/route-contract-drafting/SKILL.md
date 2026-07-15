@@ -1,6 +1,6 @@
 ---
 name: route-contract-drafting
-version: 0.1.0
+version: 0.1.1
 description: >
   Pick the right LLM for CONTRACT DRAFTING — generating, redlining, or rewriting contract
   language from instructions. Vendor-neutral routing grounded in mid-2026 legal benchmarks
@@ -31,6 +31,14 @@ constraints. This is decision support, **not legal advice**.
 Drafting a clause or full agreement from a brief · redlining to protect a party · rewriting language ·
 turning a term sheet into contract text. (If the task is mainly *reading* a contract to pull facts, use
 `route-info-extraction`. If it's *assessing* an existing contract, use `route-contract-review`.)
+
+## Draft to prevent the errors review exists to catch
+The Spellbook Labs SEC study found **~60% of executed contracts ship with ≥1 drafting issue**, stable across
+20 years. Drafting is where those are cheapest to prevent. Whatever model you route to, the draft is not done
+until it clears the same **7 classes** review is graded on: drafting mistakes · internal inconsistencies ·
+undefined terms · broken cross-references · broken definitions · ambiguities · clauses that don't work as
+written. This is *why* conflict-flagging matters at draft time — and why **Opus 4.8** (flags contradictory
+instructions) beats a more polished drafter that papers over them. Data: repo `data/scorecard-2026-07.md` §6.
 
 ## Step 1 — Infer, then ask only what's missing
 Read the request and infer the four routing axes. Ask the user **only** the axes you cannot infer, and
@@ -82,8 +90,9 @@ FALLBACK:   <model> — <when to switch to it>
 ESCALATE IF: <trigger, e.g. "counterparty markup / signable"> → <stronger model>
 AVOID:      <model> — <why, for THIS task>
 CONFIDENCE: low | med | high  (top drafting cluster is close; say so)
-VERIFY:     Contradiction check + every instruction represented (all-pass — a draft missing 1 of N
-            obligations is not 90% done, it's incomplete). Human sign-off for signable text.
+VERIFY:     Self-check the draft against the 7 error classes above (undefined terms, broken cross-refs/
+            definitions, ambiguities, clauses that don't work) + every instruction represented (all-pass —
+            a draft missing 1 of N obligations is not 90% done, it's incomplete). Human sign-off for signable text.
 ```
 
 If stakes are High, append: *"Benchmarks drift monthly — re-check https://www.legalbenchmarks.ai/leaderboard

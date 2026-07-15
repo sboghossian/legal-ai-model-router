@@ -21,7 +21,7 @@ to avoid, and what a human must still verify.**
 - **Contract drafting** → Claude Opus 4.8 leads (and uniquely flags contradictory instructions).
 - **Info extraction** → GPT 5.6 Sol leads (but flattens conditionals; weak on scans).
 - **Legal reasoning** → the top 10 cluster within ~3 points, so **cost and speed decide**, not rank.
-- **Contract review** → a *composite* (extraction + reasoning + drafting + conflict-detection); route by sub-task.
+- **Contract review** → a *composite* (extraction + reasoning + drafting + conflict-detection); route by sub-task, then grade the result against a 7-class error acceptance test (Spellbook Labs SEC study).
 - **Legal translation** → no clean benchmark exists; directional, human review mandatory.
 
 Routing off a generalist leaderboard picks wrong. Route to the **task**, under the user's **constraints**, and
@@ -105,6 +105,9 @@ The data is triangulated from public benchmarks and independent research, all ci
 - **legalbenchmarks.ai** — Contract Drafting & Info Extraction (lawyer-checklist, all-pass grading).
 - **Vals AI × Stanford CodeX — LegalBench** — legal reasoning across 124 models.
 - **Harvey — Legal Agent Benchmark (LAB)** — task-design standard for agentic legal work.
+- **Spellbook Labs — SEC contract-error study** — ~60% of 3,019 filed contracts carry a drafting issue
+  (stable over 20 years; deal/M&A paper 12–15% high-risk). Ranks no models; it's the *acceptance test*
+  contract review is graded against, and the risk prior that elevates M&A stakes.
 - **Wei Chen / The Atticus Project** — CUAD, MAUD, ACORD; the "demand public benchmarking" thesis and the
   *capability ≠ controllability* principle.
 - **WMT25, SwiLTra-Bench, ArabLegalEval** — the (thin) legal-translation evidence.

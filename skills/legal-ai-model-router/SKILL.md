@@ -1,6 +1,6 @@
 ---
 name: legal-ai-model-router
-version: 0.1.0
+version: 0.1.1
 description: >
   Entry point for routing any legal task to the right LLM — like OpenRouter, but for legal work and
   grounded in mid-2026 legal benchmarks. Figures out which of five legal verticals the task belongs to
@@ -74,6 +74,9 @@ VERIFY:     <what a human must check> (+ live re-check link if stakes are High)
 - **Capability ≠ controllability** (Wei Chen, Atticus Project): a top benchmark score is not permission to run
   the model unsupervised. Governance is a separate axis.
 - **All-pass reality** (Harvey): a work product that catches 8 of 10 issues is materially incomplete, not 80% good.
+- **Contract work has a measured error base rate** (Spellbook Labs SEC study: ~60% of filed contracts carry
+  ≥1 drafting issue; deal/M&A paper 12–15% high-risk). This ranks no models, but it is the **acceptance test**
+  `route-contract-review` grades a routed model against, and it auto-elevates purchase/M&A stakes to High.
 - **Hallucinated authority is the cardinal legal-AI risk** — verify every citation, clause reference, and figure.
 - **Benchmarks drift monthly and disagree.** Treat the baked-in scorecard as a *prior*; re-check the live boards
   before high-stakes routing (links in `data/scorecard-2026-07.md`).

@@ -128,6 +128,7 @@ those three tables and weighting toward the sub-task that dominates the specific
 - **Redline drafting** (rewrite to protect the client): weight §1 → **Opus 4.8** (best drafter *and* best at flagging contradictions) or **Grok 4.5** (leaves sound language alone, cheaper).
 - **Conflict detection across a long agreement**: **Opus 4.8** is the documented standout; **avoid GPT 5.6 Sol** (worst at silently drafting through contradictions).
 - **Long agreements (100+ pages):** advertised context ≠ effective context. Only **Gemini 3 Deep Think** holds quality near 1M tokens; most models degrade past ~200–400K. Chunk + map-reduce for the rest.
+- **Acceptance test (model-agnostic):** whichever model you route, grade its output against the 7 Spellbook error classes (§6) on an *all-pass* basis, and auto-elevate purchase/M&A stakes to High.
 
 ---
 
@@ -178,6 +179,37 @@ not optional** — that is documented industry consensus, not a hedge.
 
 ---
 
+## 6. Contract Error Base Rates — the review acceptance test (Spellbook Labs)
+
+**This section ranks no models and cannot change a model pick.** Every other section measures a *model*;
+this one measures the *target* — how often, and how badly, human-drafted contracts are flawed. That defines
+the **acceptance test** a routed reviewer must pass (§4) and a **contract-type risk prior** for setting stakes.
+
+**Source:** Spellbook Labs — empirical study of drafting-error prevalence in SEC-filed material contracts
+("Humans Hallucinate Too" / "60% of SEC-Filed Contracts Contain Errors"), https://spellbook.com/labs.
+**Scope:** 3,019 material-contract exhibits filed on EDGAR, 500+ public companies, filings 2005–2026, analyzed
+with Spellbook's own Review tool. Self-published by a contract-review vendor — trust the *direction* of the
+finding (contracts are error-prone; review has real work to do), not the exact percentages, as ground truth.
+
+**The 7 error classes a reviewer must catch (verbatim):**
+clear drafting mistakes · internal inconsistencies · undefined terms · broken cross-references ·
+broken definitions · ambiguities · clauses that may not work as written.
+
+**Base rates**
+- **~60%** ("six in ten") of contracts contained ≥1 drafting issue.
+- **~3.1%** high-risk issue rate across the full dataset.
+- Per-contract issue count **stable at ~1.1–1.3 across the 20 years** — AI-era drafting is no cleaner.
+- Company-level spread: **0.18 → 3.30** issues per contract.
+- **Contract-type risk prior:** note purchase agreements **~15%** high-risk, stock & asset purchase agreements **~12%** — deal/M&A paper runs ~4–5× the baseline.
+
+**How the router uses it**
+1. **Acceptance test, model-agnostic.** Grade the routed model's output against the 7 classes on an *all-pass* basis (catching 6 of 7 is materially incomplete, not "86% good"). Three of them — internal inconsistencies, broken cross-references, broken definitions — *are* the conflict-detection failure mode, reinforcing why **Opus 4.8** leads conflict-sensitive review and **GPT 5.6 Sol** is the one to avoid there (§4).
+2. **Stakes prior by contract type.** Purchase / M&A agreements start at elevated risk (12–15% vs 3.1%). Default them to **High** stakes and route the safe pick, whatever the user said about cost.
+
+**Caveat:** US public-company filings, one vendor's tool. Not a controlled benchmark and not multi-jurisdictional — directional grounding for *what review must catch*, not a measured score.
+
+---
+
 ## Generalist context (why not to route off a generalist leaderboard)
 
 - **Verticals re-rank the podium.** The Artificial Analysis intelligence-index leader (Fable 5 ~60, GPT-5.6 Sol ~58–59, Opus 4.8 ~56) is *not* the leader on every legal cut — e.g. Opus 4.8 tops Contract Drafting while GPT 5.6 Sol tops Info Extraction. Never route a legal task off a generalist board.
@@ -204,6 +236,7 @@ not optional** — that is documented industry consensus, not a hedge.
 - Contract Drafting & Info Extraction: https://www.legalbenchmarks.ai/leaderboard (+ /research/phase-2-research)
 - Legal reasoning (LegalBench, 124 models, live): https://www.vals.ai/benchmarks/legal_bench
 - Agentic legal task design: https://www.harvey.ai/blog/introducing-harveys-legal-agent-benchmark
+- Contract error base rates (SEC study): https://spellbook.com/labs
 - "The Path to Better Legal AI: Benchmarks" (Wei Chen): https://www.linkedin.com/pulse/path-better-legal-ai-benchmarks-wei-chen-jpksc
 - Atticus open datasets (CUAD/MAUD/ACORD): https://www.atticusprojectai.org/
 - Generalist cross-check: https://artificialanalysis.ai/leaderboards/models · https://lmarena.ai · https://www.swebench.com

@@ -2,6 +2,18 @@
 
 All benchmark data carries a snapshot date; this log tracks data refreshes and structural changes.
 
+## [0.1.1] — 2026-07-15
+
+Grounding update — no model ranks changed.
+
+- Added **§6 "Contract Error Base Rates"** to `data/scorecard-2026-07.md`, sourced from the Spellbook Labs
+  SEC contract-error study (3,019 filed contracts, 500+ companies, 2005–2026). It ranks no models — it defines
+  the *target* of contract review — so it changes no model pick.
+- `route-contract-review`: turned the study into a **7-class acceptance test** (all-pass) and a contract-type
+  **risk prior** that auto-elevates purchase/M&A stakes to High; threaded into intake and the VERIFY output.
+- `route-contract-drafting`: added a "draft to prevent these 7 error classes" note + VERIFY self-check.
+- `legal-ai-model-router`: one grounding guardrail line. README evidence base + CHANGELOG updated.
+
 ## [0.1.0] — 2026-07-14
 
 Initial release. Benchmark data snapshot: **2026-07**.

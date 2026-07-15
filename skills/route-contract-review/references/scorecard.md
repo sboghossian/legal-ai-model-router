@@ -17,6 +17,18 @@ those three tables and weighting toward the sub-task that dominates the specific
 - **Conflict detection across a long agreement**: **Opus 4.8** is the documented standout; **avoid GPT 5.6 Sol** (worst at silently drafting through contradictions).
 - **Long agreements (100+ pages):** advertised context ≠ effective context. Only **Gemini 3 Deep Think** holds quality near 1M tokens; most models degrade past ~200–400K. Chunk + map-reduce for the rest.
 
+## Spellbook — contract error base rates (the review acceptance test)
+
+**Not a model leaderboard.** It ranks no LLMs and changes no pick. It measures the *target* of review — how
+flawed human-drafted contracts are — and so it defines the acceptance test a routed model must pass and a
+risk prior for setting stakes.
+
+- **Source:** Spellbook Labs, "Humans Hallucinate Too / 60% of SEC-Filed Contracts Contain Errors" — https://spellbook.com/labs. **3,019** material-contract exhibits on EDGAR, **500+** public companies, filings **2005–2026**, analyzed with Spellbook's own Review tool. Vendor self-published: trust the *direction* (contracts are error-prone), calibrate on the exact percentages loosely.
+- **The 7 error classes a reviewer must catch (verbatim):** clear drafting mistakes · internal inconsistencies · undefined terms · broken cross-references · broken definitions · ambiguities · clauses that may not work as written.
+- **Base rates:** ~60% of contracts had ≥1 issue; ~3.1% high-risk overall; stable at **~1.1–1.3 issues/contract across 20 years** (AI-era drafting no cleaner); company spread 0.18→3.30.
+- **Contract-type risk prior:** note purchase agreements ~15% high-risk, stock & asset purchase agreements ~12% — deal/M&A paper runs ~4–5× the baseline. Default those to **High stakes**.
+- **Routing consequence:** grade the routed model's output against the 7 classes on an **all-pass** basis. Three of them (internal inconsistencies, broken cross-refs, broken definitions) *are* the conflict-detection failure mode → **Opus 4.8** for conflict-sensitive review, **avoid GPT 5.6 Sol** there.
+
 ---
 
 ## Generalist context (why not to route off a generalist leaderboard)
@@ -45,6 +57,7 @@ those three tables and weighting toward the sub-task that dominates the specific
 - Contract Drafting & Info Extraction: https://www.legalbenchmarks.ai/leaderboard (+ /research/phase-2-research)
 - Legal reasoning (LegalBench, 124 models, live): https://www.vals.ai/benchmarks/legal_bench
 - Agentic legal task design: https://www.harvey.ai/blog/introducing-harveys-legal-agent-benchmark
+- Contract error base rates (SEC study): https://spellbook.com/labs
 - "The Path to Better Legal AI: Benchmarks" (Wei Chen): https://www.linkedin.com/pulse/path-better-legal-ai-benchmarks-wei-chen-jpksc
 - Atticus open datasets (CUAD/MAUD/ACORD): https://www.atticusprojectai.org/
 - Generalist cross-check: https://artificialanalysis.ai/leaderboards/models · https://lmarena.ai · https://www.swebench.com

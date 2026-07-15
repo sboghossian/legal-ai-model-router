@@ -1,6 +1,6 @@
 ---
 name: route-contract-review
-version: 0.1.0
+version: 0.1.1
 description: >
   Pick the right LLM for CONTRACT REVIEW — reviewing an existing agreement for risk, deviations
   from standard, missing protections, and internal contradictions, and proposing redlines.
@@ -32,10 +32,27 @@ No public benchmark isolates "contract review." It is: **find the clauses** (Inf
 risk/deviation** (legal reasoning) + **propose redlines** (drafting) + **catch contradictions** (conflict
 detection). First decide which sub-task dominates *this* review, then route.
 
+## What every review must catch — the acceptance test (grounded, model-agnostic)
+Which *model* you pick is only half the job; the other half is knowing what "done" means. The Spellbook Labs
+study of **3,019 SEC-filed contracts (500+ public companies, 2005–2026)** found **~60% contained ≥1 drafting
+issue**, a rate **stable at ~1.1–1.3 issues/contract across 20 years** (AI-era paper is no cleaner). It ranks
+no models — so it changes no pick — but it defines the **7 error classes** any routed reviewer must surface,
+on an **all-pass** basis (catch 6 of 7 = incomplete, not "86% good"):
+
+> clear drafting mistakes · internal inconsistencies · undefined terms · broken cross-references ·
+> broken definitions · ambiguities · clauses that may not work as written
+
+Three of these (**internal inconsistencies, broken cross-references, broken definitions**) are exactly the
+**conflict-detection** failure mode — which is why **Opus 4.8** leads conflict-sensitive review and **GPT 5.6
+Sol** is the one to avoid there. **Risk prior by contract type:** deal/M&A paper runs hot — note purchase
+agreements ~15% high-risk, stock & asset purchase agreements ~12%, vs a ~3.1% baseline. Treat those as **High
+stakes by default**, whatever the user said about cost. (Full data: `references/scorecard.md` §Spellbook.)
+
 ## Step 1 — Infer, then ask only what's missing
 Batched, multiple-choice, recommended-first:
 1. **Stakes** — *Recommended: High* for any counterparty-facing agreement. `Quick sanity check` · `Working
-   review` · `High — you'll rely on the redlines`.
+   review` · `High — you'll rely on the redlines`. **Auto-elevate to High** for purchase / M&A agreements
+   (12–15% high-risk vs a ~3.1% baseline — see the risk prior above), regardless of the cost answer.
 2. **Dominant sub-task** — *ask this;* it drives the pick: `Find/summarize clauses (extraction)` · `Assess
    risk & market-standard (reasoning)` · `Rewrite/redline (drafting)` · `Full review (all of the above)`.
 3. **Document length** — `Short (<30pp)` · `Long (30–100pp)` · `Very long (100pp+)`.
@@ -71,8 +88,10 @@ FALLBACK:   <model> — <when to switch>
 ESCALATE IF: <trigger, e.g. "conflicting terms suspected" or "doc > effective context"> → <Opus 4.8 / chunking>
 AVOID:      <model> — <why>  (name GPT 5.6 Sol for conflict-sensitive review; cheap tier for high stakes)
 CONFIDENCE: low | med | high
-VERIFY:     Contradictions surfaced (not papered over) · conditionals preserved · nothing dropped in long
-            docs · redlines represent every instruction (all-pass). Human sign-off before you send markup.
+VERIFY:     Run the 7-class acceptance test (all-pass): drafting mistakes · internal inconsistencies ·
+            undefined terms · broken cross-refs · broken definitions · ambiguities · clauses that don't work
+            as written. Plus: conditionals preserved · nothing dropped in long docs · redlines cover every
+            instruction. Human sign-off before you send markup.
 ```
 If stakes are High: *"Re-check https://www.legalbenchmarks.ai/leaderboard and https://www.vals.ai/benchmarks/legal_bench before relying on this."*
 
