@@ -38,7 +38,8 @@ skills/
 ├── route-info-extraction/      # pull clauses / dates / parties / obligations from documents
 ├── route-legal-research/       # issue-spot / apply rules / case analysis / memos / agentic research
 ├── route-contract-review/      # assess an existing agreement for risk / conflicts + redline
-└── route-legal-translation/    # translate contracts / statutes / case law (incl. Arabic/MENA)
+├── route-legal-translation/    # translate contracts / statutes / case law (incl. Arabic/MENA)
+└── route-council/              # high-stakes escalation: convene the top 2–3 models + reconcile
 data/
 └── scorecard-2026-07.md        # canonical dataset: all tables, methodology, caveats, live sources (SoT)
 ```
@@ -94,6 +95,29 @@ AVOID:      <model> — why, for THIS task
 CONFIDENCE: low | med | high
 VERIFY:     what a human must still check
 ```
+
+---
+
+## Council mode (high-stakes escalation)
+
+A single top-scorer that catches 8 of 10 issues is materially incomplete, not "80% good." So for **High-stakes**
+work — signable/filing-facing text, full contract review, obligations extraction, conflict detection, or
+**purchase/M&A agreements** (auto-elevated by the contract-error risk prior) — the router escalates from one
+model to a **council**: [`route-council`](skills/route-council/) convenes the top **2–3 cross-provider** models,
+runs them **independently**, then reconciles.
+
+- **The panel re-ranks by task**, grounded in the scorecard: e.g. drafting → Opus 4.8 + Grok 4.5 + Gemini 3.5
+  Flash; extraction → GPT 5.6 Sol + Opus 4.8 + Grok 4.5; reasoning → Fable 5 + Gemini 3.1 Pro + GPT-5.6 Sol.
+  Cross-provider on purpose — same-family models share correlated errors, so their agreement is weaker evidence.
+- **Two reconciliation modes.** Recall-critical work (extraction, review) takes the **union** of findings —
+  every issue any member flags is a candidate, never majority-voted away. Judgment work (a conclusion, a term)
+  treats **agreement as confidence** and **material disagreement as a signal to escalate to a human** — never a
+  silent pick.
+- **Calibrated confidence:** unanimous → HIGH, isolated dissent → MED, material disagreement → LOW (escalate).
+  Confidence measures model *agreement*, not correctness — the human verify step stays mandatory.
+- Output keeps the base contract and adds **CONVENED / CONSENSUS / DISSENT / RECONCILE**. Council is 2–3× the
+  cost and slower, so it's reserved for the high-stakes tail — low-stakes, high-volume, and real-time work keep
+  the single-model route.
 
 ---
 

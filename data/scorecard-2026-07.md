@@ -210,6 +210,44 @@ broken definitions · ambiguities · clauses that may not work as written.
 
 ---
 
+## 7. Council / Consensus Mode — composed picks, no new benchmark
+
+**This section ranks no new models.** It composes the per-task leaders from §1–§5 into **panels** for the
+`route-council` skill and documents the rules for running 2–3 of them together on **High-stakes** work. It
+changes no single-model pick — it only says which models to convene when one pick isn't enough, and how to
+reconcile them.
+
+**When to convene:** stakes = **High** *and* the task is signable/filing-facing, recall-critical (full review,
+obligations extraction, conflict detection), a **purchase/M&A agreement** (§6 risk prior auto-elevates these),
+or a contested judgment you want independently corroborated. **Do not council** low-stakes triage, high-volume
+batch, or real-time work — council is **2–3× compute + slower**.
+
+**Panels (cross-provider, complementary blind spots — same-family pairs share correlated errors):**
+
+| Task type | Council panel (2–3) | Complementarity |
+|-----------|---------------------|-----------------|
+| **Contract drafting** (§1) | Opus 4.8 (Anthropic) + Grok 4.5 (xAI) + Gemini 3.5 Flash (Google) | Opus 67.6% & flags contradictions · Grok 58.8%, leaves sound language alone · Flash 55.9% cheap third read (alt: Fable 5). |
+| **Info extraction** (§2) | GPT 5.6 Sol (OpenAI) + Opus 4.8 (Anthropic) + Grok 4.5 (xAI, when scans) | Sol 89.7% exhaustive but flattens conditionals & weak scans · Opus 86.2% dependable · Grok best scanned-doc handling. |
+| **Legal reasoning** (§3) | Fable 5 (Anthropic) + Gemini 3.1 Pro (Google) + GPT-5.6 Sol (OpenAI) | Top 10 within ~2.9 pts (88.56/87.40/86.97) — rank is noise; three near-tied cross-provider reads. Value swap: Gemini 3 Flash. |
+| **Contract review** (§4) | Opus 4.8 (Anthropic) + GPT 5.6 Sol (OpenAI) + Gemini 3 Flash / Fable 5 | Opus conflict-detection + redlines · Sol clause coverage · third for independent risk reasoning. |
+| **Legal translation** (§5) | Gemini (Google) + Claude Opus (Anthropic) + Qwen-MT / Cohere Aya (Arabic, self-hostable) | Directional, no benchmark. Never auto-merge; human legal-linguist mandatory. |
+
+**Reconciliation — two modes:**
+- **Recall-critical / all-pass** (extraction, review, conflict detection) → take the **UNION** of findings;
+  every item any member flags is a candidate. **Never majority-vote a singleton away** (Harvey all-pass reality).
+- **Judgment / single-answer** (a conclusion, a drafting/translation choice) → **agreement raises confidence;
+  material disagreement → escalate to a human**. Do not average conflicting legal conclusions.
+
+**Agreement → confidence (calibrated):** Unanimous → **HIGH** (synthesize; human still runs the acceptance
+test) · Isolated dissent → **MED** (keep/investigate the singleton, never drop it) · Material disagreement →
+**LOW** (escalate, present every position, **no silent pick**).
+
+**Non-negotiable:** confidence = model **agreement**, not correctness — correlated blind spots yield *confident
+wrong* consensus (all members flatten the same conditional, or mis-cite the same rule). Council raises
+confidence; the human verify step stays mandatory. (Full skill: `skills/route-council/`.)
+
+---
+
 ## Generalist context (why not to route off a generalist leaderboard)
 
 - **Verticals re-rank the podium.** The Artificial Analysis intelligence-index leader (Fable 5 ~60, GPT-5.6 Sol ~58–59, Opus 4.8 ~56) is *not* the leader on every legal cut — e.g. Opus 4.8 tops Contract Drafting while GPT 5.6 Sol tops Info Extraction. Never route a legal task off a generalist board.

@@ -1,6 +1,6 @@
 ---
 name: legal-ai-model-router
-version: 0.1.1
+version: 0.2.0
 description: >
   Entry point for routing any legal task to the right LLM — like OpenRouter, but for legal work and
   grounded in mid-2026 legal benchmarks. Figures out which of five legal verticals the task belongs to
@@ -9,7 +9,8 @@ description: >
   recommends a model with fallback + what to avoid + what a human must verify. Use when someone asks
   "which model / LLM should I use for this legal task", "route this legal work", "best AI model for
   [legal task]", "pick a model for me", or has a legal task and no fixed model. Dispatches to the
-  route-* vertical skills for the detailed pick.
+  route-* vertical skills for the detailed pick, and escalates High-stakes work to
+  route-council (convene 2–3 models + reconcile) when one model isn't enough.
 triggers:
   - which model or LLM should I use for this legal task
   - route this legal work to the right model
@@ -57,7 +58,19 @@ Infer from the request; ask **only what's missing**, **batched, multiple-choice,
 3. **Speed** — batch vs interactive vs real-time (default **Interactive**)
 4. **Privacy / jurisdiction / language** — cloud vs on-prem, which law, which language (default **US/EN cloud**)
 
-If the user says "just pick," assume the defaults above and state that you did.
+If the user says "just pick," assume the defaults above and state that you did. **If stakes come back High and
+the task is signable/filing-facing, recall-critical, or an M&A agreement, consider escalating to council mode
+(below) instead of a single-model route.**
+
+## Step 2.5 — Escalate to council for High stakes (optional)
+A single top-scorer that catches 8 of 10 issues is materially incomplete, not "80% good." For **High-stakes**
+work where a single miss is costly and hard to spot — signable/filing-facing text, full contract review,
+obligations extraction, conflict detection, or **purchase/M&A agreements** (the §6 risk prior auto-elevates
+these) — don't route one model; invoke **`route-council`** to convene the top **2–3** cross-provider models,
+run them independently, score their agreement, and either synthesize a consensus or escalate to a human on
+material disagreement (never a silent pick). Council is **2–3× cost + slower** — reserve it for the High-stakes
+tail; keep the single-model route for low-stakes, high-volume, or real-time work. A router that always picks
+one model has stopped routing; `route-council` is the guard for when one pick isn't enough.
 
 ## Step 3 — Output (uniform across the bundle)
 ```

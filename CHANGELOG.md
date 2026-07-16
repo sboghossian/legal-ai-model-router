@@ -2,6 +2,26 @@
 
 All benchmark data carries a snapshot date; this log tracks data refreshes and structural changes.
 
+## [0.2.0] — 2026-07-16
+
+New capability — **council / consensus mode**. No model ranks changed; the benchmark snapshot stays **2026-07**.
+
+- Added a sixth skill, **`route-council`**, the High-stakes escalation of a single-model route: convene the top
+  **2–3 cross-provider** models, run them independently (no cross-talk), score their agreement, and either
+  synthesize a consensus or escalate to a human on material disagreement — never a silent pick. Ships with its
+  own `references/scorecard.md`, so it installs standalone like every vertical.
+- Panels **re-rank by task**, composed from the existing scorecard leaders (drafting → Opus 4.8 + Grok 4.5 +
+  Gemini 3.5 Flash; extraction → GPT 5.6 Sol + Opus 4.8 + Grok 4.5; reasoning → Fable 5 + Gemini 3.1 Pro +
+  GPT-5.6 Sol; review → Opus 4.8 + GPT 5.6 Sol + Gemini 3 Flash/Fable 5; translation → Gemini + Opus + Qwen/Aya).
+- Two reconciliation modes: recall-critical work takes the **union** of findings (all-pass — never vote a
+  singleton away); judgment work treats **agreement as confidence** and **disagreement as escalate-to-human**.
+- Output keeps the base contract and adds **CONVENED / CONSENSUS / DISSENT / RECONCILE** plus a calibrated
+  CONFIDENCE (unanimous → HIGH · isolated dissent → MED · material disagreement → LOW). Confidence = model
+  agreement, not correctness — the human verify step stays mandatory.
+- Added **§7 "Council / Consensus Mode"** to `data/scorecard-2026-07.md` (composed picks + reconciliation rules;
+  ranks no new models). `legal-ai-model-router`: added **Step 2.5** escalating High-stakes routes to the council.
+  README: `route-council` in the tree + a "Council mode" section.
+
 ## [0.1.1] — 2026-07-15
 
 Grounding update — no model ranks changed.
