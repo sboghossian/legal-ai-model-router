@@ -1,6 +1,6 @@
 ---
 name: route-info-extraction
-version: 0.1.0
+version: 0.2.0
 description: >
   Pick the right LLM for LEGAL INFO EXTRACTION — pulling facts, clauses, dates, parties,
   obligations, and structured fields out of contracts and legal documents. Vendor-neutral routing

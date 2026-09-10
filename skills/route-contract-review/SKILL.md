@@ -1,6 +1,6 @@
 ---
 name: route-contract-review
-version: 0.1.1
+version: 0.2.0
 description: >
   Pick the right LLM for CONTRACT REVIEW — reviewing an existing agreement for risk, deviations
   from standard, missing protections, and internal contradictions, and proposing redlines.

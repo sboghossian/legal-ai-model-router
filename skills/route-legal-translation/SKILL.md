@@ -1,6 +1,6 @@
 ---
 name: route-legal-translation
-version: 0.1.0
+version: 0.2.0
 description: >
   Pick the right LLM for LEGAL TRANSLATION — translating contracts, statutes, case law, and legal
   correspondence across languages, including Arabic/MENA. Vendor-neutral routing triangulated from

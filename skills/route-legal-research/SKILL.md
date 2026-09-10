@@ -1,6 +1,6 @@
 ---
 name: route-legal-research
-version: 0.1.0
+version: 0.2.0
 description: >
   Pick the right LLM for LEGAL RESEARCH & ANALYSIS — issue-spotting, rule application, case/statute
   analysis, memos, and multi-step agentic research. Vendor-neutral routing grounded in mid-2026

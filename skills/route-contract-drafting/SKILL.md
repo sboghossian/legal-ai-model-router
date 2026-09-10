@@ -1,6 +1,6 @@
 ---
 name: route-contract-drafting
-version: 0.1.1
+version: 0.2.0
 description: >
   Pick the right LLM for CONTRACT DRAFTING — generating, redlining, or rewriting contract
   language from instructions. Vendor-neutral routing grounded in mid-2026 legal benchmarks

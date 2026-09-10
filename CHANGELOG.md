@@ -2,6 +2,44 @@
 
 All benchmark data carries a snapshot date; this log tracks data refreshes and structural changes.
 
+## [0.3.0] — 2026-09-10
+
+First **first-party measured run** on the scorecard. Adds newer models than any section here covered, and three
+properties no public legal board measures. **No third-party rank changed; the §1–§7 snapshot stays 2026-07.**
+
+- Added **§8 "First-party measured run — GPT-6 Astra vs Opus 5 vs Luna Pro (2026-09)"** to
+  `data/scorecard-2026-07.md`. 41 prompts x 3 models across 20 practice areas, reasoning effort pinned to
+  `medium`, quality/accuracy scored by an independent judge, **cost taken from what the provider actually
+  billed** rather than estimated from tokens. Provenance is deliberately flagged as different in kind from
+  §1–§5: no vendor filter, but small n and no independent reproduction.
+- **§8.1 — price the answer, not the token.** GPT-6 Astra bills 2x Claude Opus 5's per-token rate and costs
+  roughly *half* as much per answer, because it emits ~3.5x fewer tokens (5,201 vs 18,190). Measured cost per
+  answer: Astra $0.2622 · Opus 5 $0.4566 · Luna Pro $0.0231. Added as **cross-cutting caveat 7** and folded
+  into the dispatcher's Cost intake axis.
+- **§8.2 — table stakes moved.** Structured output (11/11 fields), tool selection (100%, no over-triggering),
+  refusal calibration (100% balanced) and rejection of obviously fabricated authorities (16/16) came back
+  *identical and perfect across all three models*. They can no longer separate frontier models. Added as
+  **cross-cutting caveat 8**, and the dispatcher now says so rather than routing on a solved axis.
+- **§8.3 — the one axis that did separate.** On six MENA/French provisions asked in the local language,
+  **Claude Opus 5 scored 6/6 legally correct against 4/6 for both OpenAI models, which failed the same two
+  items.** Every error was a **correct citation attached to a misstated rule** — a failure mode a
+  citation-existence checker passes. Cross-referenced into §5 (Legal Translation), whose guidance was
+  previously proxy-based only; this is a direct legal-accuracy measurement pointing the same way.
+- **§8.4 — consistency is not purchasable.** Five seeded repeats per prompt: **no model reproduced an
+  identical answer** (similarity 0.47–0.78); Claude Opus 5 does not accept a `seed` at all, while both OpenAI
+  models do. Caveat 4's "no drift/consistency testing" now cites a measurement instead of an absence.
+- **§8.5 — a reasoning-effort dial is a cost lever, not a quality lever.** High effort scored *worse* than low
+  (8.83/8.67 vs 9.00/8.86) for 12x the reasoning tokens and 1.5x the cost.
+- **§8.6 — negative result, deliberately published.** No per-practice-area ranking is included: at 1–3 prompts
+  per area the spread between models was ~0.5 points out of 20 with outright ties, which would be noise dressed
+  as guidance. It sharpens rather than contradicts the bundle's thesis — the podium re-ranks **between
+  verticals**, not between practice areas inside one vertical.
+- Re-sliced all six `references/scorecard.md` files with the parts of §8 that bear on each vertical.
+  `route-council` keeps its bespoke caveats list and gains the point that matters most to it: **both OpenAI
+  models failed the same items the same way, so a same-lineage panel would have returned unanimous and wrong —
+  cross-provider composition is the mechanism, not a nicety.**
+- Versions: dispatcher and `route-council` → 0.3.0; the five verticals → 0.2.0.
+
 ## [0.2.0] — 2026-07-16
 
 New capability — **council / consensus mode**. No model ranks changed; the benchmark snapshot stays **2026-07**.
