@@ -1,6 +1,6 @@
 ---
 name: route-council
-version: 0.2.0
+version: 0.3.0
 description: >
   Escalate a HIGH-STAKES legal task from a single-model route to a COUNCIL — convene the top 2–3
   models, run them independently, compare and score their agreement, and synthesize a consensus

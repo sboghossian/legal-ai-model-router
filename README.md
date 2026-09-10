@@ -154,6 +154,9 @@ Benchmarks drift. When you refresh:
 
 1. Edit **`data/scorecard-2026-07.md`** (the single source of truth) — update tables, bump the date, rename the
    file to the new month.
+   *Exception:* a section that adds new data **without** refreshing the third-party boards (like §6, §7 and §8)
+   keeps the existing snapshot date and carries its own date in its heading — renaming the file would falsely
+   imply §1–§5 were re-pulled.
 2. Re-slice the per-skill `references/scorecard.md` files from it.
 3. Update the inline tables in each `SKILL.md` and note the change in `CHANGELOG.md`.
 

@@ -1,6 +1,6 @@
 ---
 name: legal-ai-model-router
-version: 0.2.0
+version: 0.3.0
 description: >
   Entry point for routing any legal task to the right LLM — like OpenRouter, but for legal work and
   grounded in mid-2026 legal benchmarks. Figures out which of five legal verticals the task belongs to
@@ -54,7 +54,10 @@ Map the request to one (or more) of:
 ## Step 2 — The four intake axes (shared by every vertical)
 Infer from the request; ask **only what's missing**, **batched, multiple-choice, recommended-default-first**:
 1. **Accuracy / stakes** — how bad is a wrong answer? (default **High** for anything client- or filing-facing)
-2. **Cost** — willingness to pay per task / at volume (default **Balanced**)
+2. **Cost** — willingness to pay per task / at volume (default **Balanced**). **Price the answer, not the
+   token**: verbosity varies more between models than list price does, and a model billing 2x per token can
+   cost half as much per answer (scorecard §8.1). Reasoning tokens bill at the completion rate whether or not
+   the reader sees them.
 3. **Speed** — batch vs interactive vs real-time (default **Interactive**)
 4. **Privacy / jurisdiction / language** — cloud vs on-prem, which law, which language (default **US/EN cloud**)
 
@@ -99,6 +102,13 @@ VERIFY:     <what a human must check> (+ live re-check link if stakes are High)
 ## Data & provenance
 - Baked scorecard + methodology + live sources: repo `data/scorecard-2026-07.md` (single source of truth).
 - Per-vertical detail: each `route-*/SKILL.md` (+ its `references/scorecard.md`).
-- Snapshot: **2026-07.** If today is much later, re-pull the live boards before trusting ranks.
+- Snapshot: **2026-07** for the third-party leaderboards (§1–§5). If today is much later, re-pull the live
+  boards before trusting ranks.
+- **§8 is a first-party run (2026-09)** — models we executed ourselves, with measured costs and properties no
+  public board covers (consistency, reasoning-effort economics, non-English legal accuracy). Small n, no
+  independent reproduction: trust it on **direction and mechanism**, trust §1–§5 on **relative rank**.
+- **Three axes are now settled and cannot decide a route** (§8.2): structured output, tool selection, and
+  rejecting obviously fabricated citations are perfect across frontier models. If a request hinges on one of
+  those, say so and route on cost, latency or jurisdiction instead.
 
 This bundle routes models; it does not give legal advice. A qualified lawyer owns the work.

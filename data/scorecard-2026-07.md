@@ -19,6 +19,12 @@ lawyer checklist) is a far harsher scale than "accuracy" on Vals LegalBench (mul
 Model names reflect what the benchmarks published as of the snapshot date. Vendors ship fast; a name here
 may already be superseded. The **archetype** (what a model is *for*) ages slower than its exact rank.
 
+**§8 is different in kind from §1–§7.** Sections 1–5 report third-party leaderboards; §6–§7 are derived
+guidance that ranks no models; **§8 is a first-party run we executed ourselves in 2026-09** — newer models,
+measured costs, and properties no public board covers (consistency, reasoning-effort economics, non-English
+legal accuracy), but small samples and no independent reproduction. Weight it accordingly: trust §8 on
+*direction and mechanism*, trust §1–§5 on *relative rank*.
+
 ---
 
 ## 1. Contract Drafting
@@ -173,6 +179,11 @@ always requires a qualified human translator — the LLM is a first-draft engine
   multilingual and are the strongest *self-hostable* Arabic options.
 - **RTL is a UI problem, not a model problem** — output text is fine; display alignment is a front-end
   concern (relevant only if you build your own Arabic UI on the API).
+- **Direct legal-accuracy measurement (§8.3, 2026-09, n=6):** on Saudi, UAE, Qatari, Egyptian and French
+  provisions asked in the local language, **Claude Opus 5 scored 6/6 legally correct; GPT-6 Astra and
+  GPT-5.6 Luna Pro both 4/6** — failing the *same two* items. All three replied in the right language and
+  cited the right provision every time; only the substance was wrong. Small n, but it is a measurement of
+  legal correctness rather than a translation-quality proxy, and it agrees with the proxies above.
 
 **Routing metric:** none published. Route on the proxies above; **human legal-linguist review is mandatory,
 not optional** — that is documented industry consensus, not a hedge.
@@ -248,6 +259,133 @@ confidence; the human verify step stays mandatory. (Full skill: `skills/route-co
 
 ---
 
+## 8. First-party measured run — GPT-6 Astra vs Opus 5 vs Luna Pro (2026-09)
+
+**Snapshot date for this section is 2026-09; §1–§7 remain the 2026-07 third-party snapshot.** This is the
+only section on this scorecard produced by running the models ourselves rather than reading a public
+leaderboard, so its provenance is different in both directions: nothing here is filtered through a vendor's
+own eval, and nothing here has been reproduced by anyone else. **n is small. Read the shape, not the decimals.**
+
+**Method:** 41 prompts answered by all three models, drawn round-robin across 20 practice areas; reasoning
+effort pinned to `medium` for every model with a 32k ceiling none of them hit; quality/accuracy scored 1–10
+by an independent judge (Claude Sonnet 5); cost taken from what OpenRouter actually billed, not estimated
+from token counts. Harness and raw data: `legal-llm-benchmark/astra/`.
+
+| Model | Slug | List price in/out | **Cost per answer** | Output tokens | Substance /20 | Hallucination flags | Latency |
+|-------|------|------------------:|--------------------:|--------------:|--------------:|--------------------:|--------:|
+| GPT-6 Astra | `openai/gpt-6-astra` | $10 / $50 per M | $0.2622 | 5,201 | **17.63** | **0.0%** | 159s |
+| Claude Opus 5 | `anthropic/claude-opus-5` | $5 / $25 per M | $0.4566 | 18,190 | 17.22 | 16.2% | 264s |
+| GPT-5.6 Luna Pro | `openai/gpt-5.6-luna-pro` | $0.20 / $1.20 per M | **$0.0231** | 16,356 | 16.95 | 12.2% | **83s** |
+
+"Substance" = judged quality + accuracy out of 20. It deliberately excludes the speed term that a composite
+score would fold in — on the composite, the fastest model wins instead, which is a different question.
+
+### 8.1 Cost per token is the wrong unit — use cost per answer
+
+**GPT-6 Astra bills 2x Claude Opus 5's per-token rate and costs roughly half as much per answer**, because it
+emits ~3.5x fewer tokens to say the same thing. Any routing rule that reads a price list and stops there gets
+this backwards. Two consequences for the `Cost/task` columns in §1–§4: they are only comparable between models
+of similar verbosity, and reasoning tokens — which the reader never sees — bill at the full completion rate and
+belong in the figure.
+
+**Practical rule:** when a cost axis decides a route, price the *answer*, not the token. Measure it once per
+model on your own representative prompts; verbosity varies more between models than price does.
+
+### 8.2 Where the models actually separated
+
+Five properties came back **identical across all three models** and therefore cannot inform a route:
+
+- **Fabricated-authority rejection: 16/16 for every model.** Eight real authorities and eight invented ones
+  (a UAE algorithmic-accountability law never enacted, a CJEU judgment never handed down, a Bribery Act
+  section never drafted, a real GDPR article cited for the wrong subject). Zero confabulation, zero
+  over-refusal. **A hallucination-rate claim built on obvious fake citations no longer separates frontier
+  models** — the remaining citation risk is subtler than this test can see (see §8.3).
+- **Refusal calibration: 100% balanced.** Six requests a lawyer must decline and six near-adjacent legitimate
+  ones; every model refused all of the first and answered all of the second.
+- **Structured output: 11/11 ground-truth fields, schema-valid, all three.**
+- **Tool calling: 100% correct tool and arguments, no over-triggering, all three.**
+- **Long-context multi-hop: 9/9.** A liability cap, an overriding carve-out, a compounding escalator and a
+  governing-law clause planted at four depths of a document, tested at 25k / 100k / 200k tokens. Every model
+  resolved the full precedence chain at every depth — **but it cost $2.01 (Astra) versus $0.15 (Luna Pro) to
+  reach an identical answer.**
+
+**Routing consequence:** structured output, tool use and basic citation honesty have become table stakes.
+Any routing rule, roadmap item or vendor claim still premised on these being differentiators is out of date.
+
+### 8.3 The one axis that did separate: non-English, non-common-law substance
+
+Six questions across five jurisdictions in the language a local practitioner would use (Saudi and UAE labour
+law and Qatari data transfer in Arabic, French limitation periods and unfair-terms doctrine in French,
+Egyptian data-transfer licensing in English):
+
+| Model | Replied in the right language | Cited the right provision | **Legally correct** |
+|-------|------------------------------:|--------------------------:|--------------------:|
+| Claude Opus 5 | 6/6 | 6/6 | **6/6** |
+| GPT-6 Astra | 6/6 | 6/6 | 4/6 |
+| GPT-5.6 Luna Pro | 6/6 | 6/6 | 4/6 |
+
+Two things matter more than the ratio:
+
+1. **Both OpenAI models failed the same two items** — Saudi Labour Law Art. 75 notice periods and Egyptian
+   PDPL cross-border consent. A shared failure across two models of one lineage is a lineage blind spot, not
+   sampling noise, and it will not be fixed by switching between them.
+2. **Every wrong answer cited the correct article number and then misstated the rule.** Language fidelity was
+   perfect and provision retrieval was perfect; only the substance was wrong. **A citation-checking verifier
+   passes this failure mode.** Catching it requires checking the proposition against the source, not the
+   existence of the source.
+
+**Routing consequence:** this is a direct, if small, legal-accuracy datapoint behind §5's otherwise
+proxy-based guidance, and it points the same way — for MENA and civil-law substance, prefer Claude, and treat
+any model's output as first-draft pending human legal-linguist review.
+
+### 8.4 Consistency: not purchasable from any of them
+
+Caveat 4 below notes that public benchmarks run one attempt per task and never test drift. We tested it: three
+prompts, five repeats each, fixed seed where accepted.
+
+| Model | Accepts a seed | Identical repeats | Mean word-level similarity |
+|-------|---------------:|------------------:|---------------------------:|
+| GPT-6 Astra | yes | **0/3** | 0.78 |
+| GPT-5.6 Luna Pro | yes | **0/3** | 0.73 |
+| Claude Opus 5 | **no** | **0/3** | 0.47 |
+
+**Not one model reproduced an identical answer, seed or no seed.** Any consistency guarantee has to be built
+above the model — caching, a fixed retrieval layer, human sign-off — never assumed from a parameter.
+
+**Note the parameter asymmetry, which bit this run before it was caught:** Opus 5 accepts `temperature` but not
+`seed`; both OpenAI models are the reverse. OpenRouter drops unsupported parameters *silently*, so a harness
+that sends one request body to every model believes it pinned knobs that were never attached.
+
+### 8.5 A reasoning-effort dial is a cost lever, not a quality lever
+
+Astra exposes `reasoning_effort`. Ten prompts at each setting:
+
+| Effort | Quality | Accuracy | Reasoning tokens | Cost/answer | Latency |
+|--------|--------:|---------:|-----------------:|------------:|--------:|
+| low    | **9.00** | 8.86 | 239 | **$0.157** | **79s** |
+| medium | **9.00** | **9.00** | 1,735 | $0.247 | 146s |
+| high   | 8.83 | 8.67 | 2,976 | $0.238 | 145s |
+
+**High effort scored *worse* than low effort on both axes** for 12x the reasoning tokens, 1.5x the cost and
+1.8x the latency. Turning the dial up is not a substitute for routing to a better model, and on these tasks it
+was not even neutral. Pin the setting explicitly — leaving it at a provider default is how a model spends its
+whole token budget thinking and returns an empty answer.
+
+### 8.6 Negative result — the podium did not re-rank by practice area
+
+This bundle's core thesis is that the podium re-ranks by task. **Within general legal Q&A it did not.** Across
+all 20 practice areas the per-area sample was 1–3 prompts and the spread between models was typically 0.5
+points out of 20, with outright ties in several areas. No per-practice-area ranking is published here because
+**the data does not support one** — it would be noise dressed as guidance.
+
+Read this as a sharpening of the thesis, not a contradiction of it: the re-ranking this bundle documents is
+**between verticals** — drafting vs extraction vs research vs review vs translation, which measure genuinely
+different capabilities — not between practice areas inside a single vertical. Route on the vertical and on the
+axes in §8.1–§8.5; do not expect a different model for M&A than for employment law on the strength of anything
+measured here.
+
+---
+
 ## Generalist context (why not to route off a generalist leaderboard)
 
 - **Verticals re-rank the podium.** The Artificial Analysis intelligence-index leader (Fable 5 ~60, GPT-5.6 Sol ~58–59, Opus 4.8 ~56) is *not* the leader on every legal cut — e.g. Opus 4.8 tops Contract Drafting while GPT 5.6 Sol tops Info Extraction. Never route a legal task off a generalist board.
@@ -263,9 +401,11 @@ confidence; the human verify step stays mandatory. (Full skill: `skills/route-co
 1. **Capability ≠ controllability** (Wei Chen, Atticus Project). A high benchmark score does not mean a model stays in scope, cites truthfully, or is safe to deploy unsupervised. Governance is a separate axis from raw performance.
 2. **All-pass reality** (Harvey). A review that catches 8 of 10 risks is not 80% useful — it is materially incomplete. Route for reliability on high-stakes work, not average quality.
 3. **Grading is imperfect.** legalbenchmarks.ai reliability is scored by a *single* LLM judge (Claude Sonnet 4.6); usefulness by a 2-judge panel (~82% agreement). Their own bias check: Sonnet tops neither board and Anthropic models rank lowest on length — evidence against self-grading favoritism, but LLM-judged scores are still not ground truth.
-4. **Coverage is narrow.** legalbenchmarks.ai is English-only, US/UK-skewed, single-turn, one run per task (no drift/consistency testing), with a private task set. Vals LegalBench is multiple-choice reasoning, not drafting. **Non-US, non-English, multi-turn, and long-horizon work is under-measured.**
+4. **Coverage is narrow.** legalbenchmarks.ai is English-only, US/UK-skewed, single-turn, one run per task (no drift/consistency testing), with a private task set. Vals LegalBench is multiple-choice reasoning, not drafting. **Non-US, non-English, multi-turn, and long-horizon work is under-measured.** The consistency gap is now measured rather than assumed — see §8.4: no frontier model reproduced an identical answer across repeats, with or without a seed.
 5. **Benchmark drift & routing collapse.** Numbers here go stale monthly; and a router that always picks one dominant model has stopped routing. Re-validate when new frontier models ship.
 6. **Silent quality regression.** Cost savings show up instantly on the bill; quality loss shows up days later in the work product. Gate any cost-driven downgrade behind a spot-check.
+7. **Price the answer, not the token** (§8.1). Verbosity varies more between models than list price does — a model billing 2x per token can cost half as much per answer. Every `Cost/task` figure above is only comparable between models of similar output length, and reasoning tokens bill at the completion rate whether or not the reader sees them.
+8. **Table stakes have moved** (§8.2). Structured output, tool selection, and rejecting obviously fabricated citations are now perfect across frontier models and cannot separate them. A routing rule or vendor claim resting on any of these is measuring a solved problem. The live failure mode is subtler: a **correct citation attached to a misstated rule** (§8.3), which a citation-existence checker passes.
 
 ---
 
@@ -273,6 +413,8 @@ confidence; the human verify step stays mandatory. (Full skill: `skills/route-co
 
 - Contract Drafting & Info Extraction: https://www.legalbenchmarks.ai/leaderboard (+ /research/phase-2-research)
 - Legal reasoning (LegalBench, 124 models, live): https://www.vals.ai/benchmarks/legal_bench
+- §8 first-party run (2026-09) — harness, raw answers and per-suite scores: `legal-llm-benchmark/astra/`
+  (`core_run.py`, `suites.py`, `analyse.py`); report: https://claude.ai/code/artifact/cb794fc9-b9e3-45f0-9437-8e3eccc88f7e
 - Agentic legal task design: https://www.harvey.ai/blog/introducing-harveys-legal-agent-benchmark
 - Contract error base rates (SEC study): https://spellbook.com/labs
 - "The Path to Better Legal AI: Benchmarks" (Wei Chen): https://www.linkedin.com/pulse/path-better-legal-ai-benchmarks-wei-chen-jpksc
