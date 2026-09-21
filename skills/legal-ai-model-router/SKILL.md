@@ -1,6 +1,6 @@
 ---
 name: legal-ai-model-router
-version: 0.3.0
+version: 0.4.0
 description: >
   Entry point for routing any legal task to the right LLM — like OpenRouter, but for legal work and
   grounded in mid-2026 legal benchmarks. Figures out which of five legal verticals the task belongs to
@@ -19,6 +19,7 @@ triggers:
 allowed-tools:
   - AskUserQuestion
   - Read
+  - Bash
 license: AGPL-3.0-or-later
 ---
 
@@ -44,6 +45,49 @@ Map the request to one (or more) of:
 | **Legal Research & Analysis** | issue-spot / apply rules / analyze case law / write a memo / agentic research | `route-legal-research` |
 | **Contract Review** | assess an existing agreement for risk / deviations / conflicts + redline | `route-contract-review` |
 | **Legal Translation** | translate contracts / statutes / case law across languages (incl. Arabic/MENA) | `route-legal-translation` |
+
+### Optional: get a measured confidence instead of a guess
+
+```bash
+python3 classify.py "<the user's request, verbatim>"
+```
+
+Returns the vertical with a **calibrated probability**, plus `is_legal`,
+`is_composite`, a stakes score, and an `ACTION` — `route`, `decompose`,
+`confirm-with-user` or `not-legal`. Costs about $0.00002 and takes ~700ms.
+
+**Exit 2 means the calibrated path is unavailable** (no `TYPESAFE_API_KEY`, no
+network). That is not an error: read the table above and carry on exactly as
+before. This script grounds the `CONFIDENCE:` line in Step 3 — it does not
+classify better than you do off five rows, and the ROI claim is calibration,
+not accuracy. Treat its `ACTION` as advice; the table remains the authority.
+
+What it is measured to be good and bad at (2026-09-21, `jev-1.13.0`, 11/11 on
+the fixture set — full numbers on GRO-1841):
+
+- **Arabic, French and English are at parity.** Verified, not assumed.
+- `is_legal` is the reliable gate. Pure non-legal returns ~0.01; legal-adjacent
+  admin ("book a flight for the hearing") lands mid-range and correctly routes
+  to `confirm-with-user`. Do **not** threshold on vertical confidence instead —
+  it does not separate out-of-scope requests.
+- ⚠ **Confidence does not fall on a vague request.** "Take a look at this NDA"
+  returns `contract_review` at 1.00. It is a defensible pick, but a high number
+  here means "this reading is coherent", never "the user was clear". Ask anyway.
+- ⚠ `is_composite` on "review and redline" sits at 0.45 against a 0.50
+  threshold — deliberately, because `route-contract-review` owns that pair, but
+  it is a thin margin. Re-measure if you touch that question.
+- ⚠⚠ **"Arabic MSA" reads as Modern Standard Arabic, not Master Services
+  Agreement.** `is_legal` drops to 0.30 on "Review this Arabic MSA and redline
+  it"; the same sentence scores 0.97 without the word *Arabic*, 0.98 with the
+  term spelled out, and 0.96 as "MSA written in Arabic". The vertical pick is
+  unaffected — only the legal-ness signal moves, which is the gate correctly
+  reporting an ambiguous input. If a MENA request scores oddly low on
+  `is_legal`, look for an ambiguous abbreviation before doubting the router.
+  This is not a Jev quirk; the phrase is ambiguous to any model.
+
+**Cost and speed are still `AskUserQuestion` territory.** They are budget and
+deployment preferences with no ground truth in the task text; no amount of
+inference replaces asking.
 
 - **One vertical** → invoke that `route-*` skill and follow it.
 - **Composite task** (e.g. "review this Arabic MSA and redline it") → decompose: route each sub-task
@@ -82,7 +126,7 @@ PRIMARY:    <model> — <one line tying the pick to the axes + benchmark>
 FALLBACK:   <model> — <when to switch>
 ESCALATE IF: <trigger> → <stronger model / human>
 AVOID:      <model> — <why, for THIS task>
-CONFIDENCE: low | med | high
+CONFIDENCE: low | med | high   (if classify.py ran, quote its p= and say so)
 VERIFY:     <what a human must check> (+ live re-check link if stakes are High)
 ```
 

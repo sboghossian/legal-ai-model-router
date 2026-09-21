@@ -96,6 +96,45 @@ CONFIDENCE: low | med | high
 VERIFY:     what a human must still check
 ```
 
+### Calibrated classification (optional)
+
+By default the bundle is pure prose and data — no code, no network, no
+dependencies. `CONFIDENCE` above is then the model's own estimate of itself,
+which is exactly the wrong place to take a model at its word: a router's most
+important decision is knowing when to distrust its own classification.
+
+`skills/legal-ai-model-router/classify.py` replaces that self-report with a
+measured probability:
+
+```bash
+export TYPESAFE_API_KEY=...          # console.typesafe.ai
+python3 classify.py "Review this Arabic MSA and redline it, then translate it"
+```
+
+```
+VERTICAL:   contract_review  (p=0.99)
+STAKES:     Medium  (score=1.3)
+IS LEGAL:   0.87
+COMPOSITE:  0.81
+ACTION:     decompose
+```
+
+It calls **Jev**, [TypeSafe AI](https://typesafe.ai)'s System One model, which
+returns typed answers with calibrated probabilities rather than text. About
+**$0.00002** per call and ~700ms.
+
+**It is an enhancement, never a dependency.** No key, no network, a bad
+response: the script exits 2, says why, and the skill reads the same five-row
+table it always has. Nothing in the bundle requires it.
+
+> **The obvious objection, stated rather than buried:** a tool whose pitch is
+> *vendor-neutral* now ships an optional classifier that calls exactly one
+> vendor. That is a real tension. Two things keep it honest — the path degrades
+> to the offline table rather than failing, and the vendor being called is not
+> one of the models being *ranked*, so it cannot put a thumb on the scale of its
+> own recommendation. If that trade is not worth it to you, do not set the key;
+> you lose a number and nothing else.
+
 ---
 
 ## Council mode (high-stakes escalation)
@@ -145,6 +184,19 @@ The data is triangulated from public benchmarks and independent research, all ci
   multiple-choice reasoning. **Non-US, non-English, multi-turn, and long-horizon work is under-measured.**
 - **Legal translation has no reliable public leaderboard** — that vertical is explicitly directional.
 - **Hallucinated citations/clauses are the cardinal legal-AI risk.** Every route ends with a verify step.
+- **The optional classifier measures calibration, not correctness.** Measured, not assumed (2026-09-21,
+  `jev-1.13.0`, 11/11 on the fixture set). Arabic, French and English classify at parity — verified, not
+  claimed. Three limits worth knowing:
+  - Confidence does **not** drop on a vague-but-plausible request. *"Take a look at this NDA"* returns
+    `contract_review` at 1.00. A high number means "this reading is coherent", never "the user was clear".
+  - `is_composite` on *"review and redline"* sits at 0.45 against a 0.50 threshold — deliberately, since
+    `route-contract-review` owns that pair, but a thin margin worth re-measuring if that question changes.
+  - **An ambiguous acronym moves `is_legal`, and that is the gate behaving correctly.** *"Review this
+    **Arabic MSA** and redline it"* scores `is_legal` 0.30, because "Arabic MSA" reads as Modern Standard
+    Arabic rather than a Master Services Agreement. Drop the word *Arabic* (0.97), spell the term out
+    (0.98), or say *"MSA written in Arabic"* (0.96) and it resolves. The vertical pick stayed
+    `contract_review` throughout — only the legal-ness signal moved. Worth knowing well beyond this tool:
+    MENA legal work produces that exact phrase constantly, and it is ambiguous to any model, not just this one.
 
 ---
 
