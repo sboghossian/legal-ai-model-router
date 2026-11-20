@@ -1,10 +1,10 @@
 ---
 name: route-legal-research
-version: 0.2.0
+version: 0.5.0
 description: >
   Pick the right LLM for LEGAL RESEARCH & ANALYSIS — issue-spotting, rule application, case/statute
-  analysis, memos, and multi-step agentic research. Vendor-neutral routing grounded in mid-2026
-  benchmarks (Vals AI LegalBench across 124 models; Harvey Legal Agent Benchmark for agentic work).
+  analysis, memos, and multi-step agentic research. Vendor-neutral routing grounded in late-2026
+  benchmarks (Vals Legal Research Bench; Harvey LAB via HLAB-Vals-1.1 for agentic file work).
   Asks up to 4 quick questions (cost, speed, accuracy/stakes, privacy/jurisdiction/language), then
   recommends a primary model + fallback + what to avoid + what a human must verify. Use when someone
   asks "which model for legal research / case analysis / a memo", "best AI for legal reasoning",
@@ -43,53 +43,66 @@ Default if "just pick": **High stakes, Balanced cost, Interactive speed, US/EN c
 
 ## Step 2 — Route using the scorecard
 
-**LegalBench scorecard (Vals AI, 124 models, updated 2026-07-09).** Legal *reasoning* accuracy across six
-task types. **The top 10 sit inside ~2.9 points — rank is mostly noise; route on cost, speed, constraints.**
+**A. Agentic legal research — Vals Legal Research Bench (updated 2026-11-18; primary signal).** Agents research
+US-law questions; all-pass accuracy. **The top nine sit within 2.9 points, so rank inside that band is noise.
+Route on cost, duration, access and constraints.**
 
-| Model                     | Accuracy | Cost In/Out (per M) | Latency | Route it for… |
-|---------------------------|---------:|--------------------:|--------:|---------------|
-| Claude Fable 5            | 88.56%   | $10 / $50           | 8.96s   | Top accuracy, but priciest — reserve for the hardest analysis. |
-| Gemini 3.1 Pro Preview    | 87.40%   | $2 / $12            | 10.06s  | Near-top accuracy at a fraction of Fable's cost. |
-| Gemini 3 Pro              | 87.03%   | $2 / $12            | 8.33s   | Same, stable release. |
-| GPT-5.6 Sol               | 86.97%   | $5 / $30            | **6.20s** | Fast + accurate; good interactive pick. |
-| **Gemini 3 Flash**        | 86.86%   | **$0.5 / $3**       | **4.67s** | **Default / value & speed champion** — near-top accuracy, cheapest + fastest in the tier. |
-| GPT-5.5                   | 86.52%   | $5 / $30            | 18.14s  | Accurate but slow; batch only. |
-| GPT-5.4 (xhigh)           | 86.04%   | $2.5 / $15          | 27.79s  | Slow; avoid interactive. |
-| Grok 4.5                  | 85.97%   | $2 / $6             | **67.88s** | ⚠️ **Brutally slow** — never in a research loop. |
-| GPT-5 / GPT-5.1           | ~86%     | $1.25 / $10         | 7–19s   | Solid mid-cost options. |
+| Model                | All-pass | Cost/test | Duration | Route it for… |
+|----------------------|---------:|----------:|---------:|---------------|
+| Gemini 4 Neon        | **56.25%** | $7.37   | 35m40s   | Top score; strong default if cost and time are acceptable. |
+| Gemini 4 Carbon      | 55.77%   | $8.74     | 51m53s   | Near-top; slower. |
+| **Muse Spark 1.3 Max** (Meta) | 55.29% | **$0.59** | **5m17s** | **Value & speed champion, if you have API access.** Not the plain Muse Spark 1.3 (40.87%). |
+| **Claude Opus 5**    | 55.29%   | $6.76     | 31m01s   | **Best Anthropic pick here.** Beats Opus 5.5 at under a third of the cost. |
+| Claude Fable 5.1     | 55.29%   | $23.06    | 57m29s   | Same score as Opus 5 at 3.4× the cost. |
+| Gemini 4 Argon       | 54.81%   | $6.45     | 31m21s   | Also leads agentic file work (B), so it is one model for both. |
+| Astra for Law (OpenAI) | 53.85% | $2.75     | 16m45s   | Legal-specific, **gated access** (canonical §9). Use only if you already have it. |
+| Claude Opus 5.5      | 50.48%   | $23.61    | 1h52m    | ⚠️ Newer than Opus 5, but scores lower at 3.5× the cost and time. |
+| Claude Fable 5.2     | 46.15%   | $3.96     | 6m56s    | Fast, but mid-table. |
+
+**B. Agentic legal work with files — HLAB-Vals-1.1 (Harvey LAB on Vals, updated 2026-11-18).** Long-horizon
+matters with documents, spreadsheets and decks; task pass rate. **Every score is low.** Leaders: **Gemini 4 Argon
+27.08%** ($10.55/test), **Muse Ember 25.00% ($0.12/test)**, Wonder 23.75%, GPT-6.2 Astra 16.25%. **Claude 5.5 models
+rank 28th–39th** (Sonnet 5.5 10.42%, Opus 5.5 9.17%). Why is untested; do not state a cause.
+
+**C. Single-turn legal reasoning — Vals LegalBench (saturated; footnote).** Top ten within ~1.6 points (Fable 5
+88.56% … GPT-5.6 Sol 86.97%). That carries no quality signal. Use it only for cost and latency on quick single-turn
+questions: **Gemini 3.7 Flash** 87.26% at $1.5/$7.5 per M and 2.23s.
 
 **Decision rules**
-- **Default (balanced)** → **Gemini 3 Flash**: ~87% accuracy, cheapest ($0.5/$3), fastest (4.67s). On a
-  benchmark this saturated, paying 20× for the #1 rank buys ~1.7 points.
-- **Max accuracy, hardest question** → **Fable 5** (88.56%) or **Gemini 3.1 Pro** (87.4%, far cheaper).
-- **Interactive research loop** → **Gemini 3 Flash** (4.67s) or **GPT-5.6 Sol** (6.2s). **Avoid Grok 4.5
-  (67.88s), GPT-5.4 xhigh (27.79s), GPT-5.5 (18s)** — latency kills the loop.
-- **Minimize cost / high volume** → **Gemini 3 Flash**.
-- **Privacy / on-prem** → open models (DeepSeek, Qwen) trail on reasoning; usable with heavy verification only.
-- **Non-US / non-English** → LegalBench is US-law-centric; ranks may not transfer. Add a jurisdiction-qualified
+- **Default (balanced, agentic research)** → **Gemini 4 Neon** or **Opus 5**: top-band score at ~$7/test, ~30–35 min.
+- **Minimize cost or time** → **Muse Spark 1.3 Max** ($0.59, 5 min) if accessible. If not, **Fable 5.2** ($3.96,
+  7 min, 46.15%) and accept the score drop.
+- **Interactive / real-time single question** (no agent loop) → a fast single-turn model from C (**Gemini 3.7
+  Flash**). Then verify citations yourself, because no agent did the research.
+- **Agentic work with files** (memos into docx, spreadsheets, a data room) → weight **B**: **Gemini 4 Argon**, or
+  **Muse Ember** for cost. Do not assume Claude's drafting lead carries over.
+- **Never upgrade on a version bump.** Opus 5.5 < Opus 5 here, at 3.5× the cost.
+- **Legal-specific models** (Astra for Law, GLM-Legal, Harvey Tenet, Thomson 1.0) → PRIMARY **only if the user
+  already has access**. Pick on the independent scores in canonical §9, not on launch claims.
+- **Privacy / on-prem** → **GLM 5.3** (49.04%) is the strongest open-weight result on this board. Usable with
+  heavy citation verification.
+- **Non-US / non-English** → the Vals legal boards are US-law. Ranks may not transfer. Add a jurisdiction-qualified
   reviewer and route language via `route-legal-translation`.
-
-**Agentic / long-horizon research** (multi-step: gather → analyze → draft a review-quality work product):
-follow **Harvey's Legal Agent Benchmark** framing — no public scores yet, and **the scaffold matters as much
-as the model** (agentic scores swing ~30 points by harness). Use a strong reasoner **+ a citation-verification
-step** and judge the *system*, not the model.
+- **Judge the system, not the model.** Harness, tools and time budget move these scores. Add a
+  citation-verification step to whatever you route.
 
 ## Step 3 — Output (use this exact shape)
 ```
 PRIMARY:    <model> — <tie to axes; note the top cluster is close>
 FALLBACK:   <model> — <when to switch>
 ESCALATE IF: <trigger, e.g. "novel/high-stakes question"> → <stronger model>
-AVOID:      <model> — <why>  (e.g. Grok 4.5 / GPT-5.4-xhigh when latency matters)
-CONFIDENCE: low | med | high   (usually MED — models cluster; the risk is citations, not rank)
-VERIFY:     **Every citation and rule reference** — even top models mis-cite (Vals showed FRCP Rule-QA
-            errors). Hallucinated authority is the #1 legal-AI failure. Human sign-off on client-facing work.
+AVOID:      <model> — <why>  (e.g. Opus 5.5 when Opus 5 scores higher for less; Claude on agentic file work)
+CONFIDENCE: low | med | high   (usually MED — top nine within 2.9 pts, none above 57%; the risk is citations)
+VERIFY:     **Every citation and rule reference** — even top models mis-cite, and a correct citation can
+            carry a misstated rule (canonical §8.3). Hallucinated authority is the #1 legal-AI failure.
+            Human sign-off on client-facing work.
 ```
-If stakes are High: *"Re-check https://www.vals.ai/benchmarks/legal_bench — the board updates and reranks."*
+If stakes are High: *"Re-check https://www.vals.ai/benchmarks/legal_research — the board updates and reranks."*
 
 ## Non-negotiables
 - **Citations are the risk, not the rank.** The models tie on reasoning; they differ in *when* they invent an
   authority. Verify sources every time.
 - **Capability ≠ controllability** (Wei Chen). A high score doesn't mean the model stays in scope or is safe to
   run unsupervised.
-- Deeper notes + methodology + sources: `references/scorecard.md` and repo `data/scorecard-2026-07.md`.
+- Deeper notes + methodology + sources: `references/scorecard.md` and repo `data/scorecard-2026-11.md`.
 - Routes models, not legal advice. A qualified lawyer owns the analysis.

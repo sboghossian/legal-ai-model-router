@@ -1,9 +1,9 @@
 ---
 name: legal-ai-model-router
-version: 0.4.0
+version: 0.5.0
 description: >
   Entry point for routing any legal task to the right LLM — like OpenRouter, but for legal work and
-  grounded in mid-2026 legal benchmarks. Figures out which of five legal verticals the task belongs to
+  grounded in late-2026 legal benchmarks. Figures out which of five legal verticals the task belongs to
   (Contract Drafting, Info Extraction, Legal Research & Analysis, Contract Review, Legal Translation),
   asks up to 4 quick questions (cost, speed, accuracy/stakes, privacy/jurisdiction/language), and
   recommends a model with fallback + what to avoid + what a human must verify. Use when someone asks
@@ -30,10 +30,13 @@ a model router like OpenRouter. You do **not** do the legal task; you recommend 
 Decision support, **not legal advice**.
 
 ## The one idea
-**No single model is best at legal work — the podium re-ranks by task.** On mid-2026 benchmarks, Opus 4.8
-tops contract *drafting* while GPT 5.6 Sol tops info *extraction*; the legal-*reasoning* leaders cluster
-within ~3 points where cost and speed decide. Routing off a generalist leaderboard (or brand loyalty) picks
-wrong. Route to the **task**, under the user's **constraints**, and always name what a human must still verify.
+**No single model is best at legal work — the podium re-ranks by task *and* by harness.** On the November 2026
+boards, Claude Opus 5.5 leads single-pass contract *drafting* (tied with Fable 5.1 and Meta's Muse Spark 1.3)
+and info *extraction* (by 10 points). Gemini 4 Neon tops agentic legal *research*, where the top nine sit
+within 3 points. On agentic work with files (Harvey LAB), Gemini 4 Argon and Meta's Muse models lead and the
+Claude 5.5 models rank in the bottom third. Newest is not best either: Opus 5 beats Opus 5.5 on research, and
+Fable 5.1 beats Fable 5.2 on drafting. The generalist #1 (Fable 5.2) ranks #24 on the Legal Index. Routing off
+a generalist leaderboard, a version number or brand loyalty picks wrong. Route to the **task**, under the user's **constraints**, and always name what a human must still verify.
 
 ## Step 1 — Classify the vertical
 Map the request to one (or more) of:
@@ -42,7 +45,7 @@ Map the request to one (or more) of:
 |----------|---------|-------|
 | **Contract Drafting** | generate / redline / rewrite contract language from instructions | `route-contract-drafting` |
 | **Info Extraction** | pull clauses / dates / parties / obligations / fields out of documents | `route-info-extraction` |
-| **Legal Research & Analysis** | issue-spot / apply rules / analyze case law / write a memo / agentic research | `route-legal-research` |
+| **Legal Research & Analysis** | issue-spot / apply rules / analyze case law / write a memo / agentic research / agentic work over a matter's files | `route-legal-research` |
 | **Contract Review** | assess an existing agreement for risk / deviations / conflicts + redline | `route-contract-review` |
 | **Legal Translation** | translate contracts / statutes / case law across languages (incl. Arabic/MENA) | `route-legal-translation` |
 
@@ -139,15 +142,21 @@ VERIFY:     <what a human must check> (+ live re-check link if stakes are High)
   `route-contract-review` grades a routed model against, and it auto-elevates purchase/M&A stakes to High.
 - **Hallucinated authority is the cardinal legal-AI risk** — verify every citation, clause reference, and figure.
 - **Benchmarks drift monthly and disagree.** Treat the baked-in scorecard as a *prior*; re-check the live boards
-  before high-stakes routing (links in `data/scorecard-2026-07.md`).
+  before high-stakes routing (links in `data/scorecard-2026-11.md`).
+- **Route on the board that matches the deployment.** Documents in context, one answer → the single-pass boards
+  (drafting, extraction). An agent with tools, files and a long horizon → the agentic boards (Legal Research
+  Bench, HLAB). The same model can lead one and trail the other (scorecard caveat 9).
+- **Legal-specific models** (OpenAI Astra for Law, Z.ai GLM-Legal, Harvey Tenet, Thomson Reuters' Thomson 1.0)
+  are gated or product-only. Name one as PRIMARY only if the user already has access (scorecard §9).
 - **Coverage is narrow**: the underlying benchmarks are largely English + US/UK; non-English, non-US, multi-turn,
-  and long-horizon work is under-measured. Add a qualified human for anything outside that box.
+  and civil-law work is under-measured. Add a qualified human for anything outside that box.
 
 ## Data & provenance
-- Baked scorecard + methodology + live sources: repo `data/scorecard-2026-07.md` (single source of truth).
+- Baked scorecard + methodology + live sources: repo `data/scorecard-2026-11.md` (single source of truth).
 - Per-vertical detail: each `route-*/SKILL.md` (+ its `references/scorecard.md`).
-- Snapshot: **2026-07** for the third-party leaderboards (§1–§5). If today is much later, re-pull the live
-  boards before trusting ranks.
+- Snapshot: **2026-11** (boards re-pulled 2026-11-20) for the third-party leaderboards (§1–§5, §9). If today is
+  much later, re-pull the live boards before trusting ranks. legalbenchmarks.ai changed method in 2026-08, so
+  its numbers are not comparable with the 2026-07 snapshot.
 - **§8 is a first-party run (2026-09)** — models we executed ourselves, with measured costs and properties no
   public board covers (consistency, reasoning-effort economics, non-English legal accuracy). Small n, no
   independent reproduction: trust it on **direction and mechanism**, trust §1–§5 on **relative rank**.

@@ -1,12 +1,12 @@
 ---
 name: route-council
-version: 0.3.0
+version: 0.5.0
 description: >
   Escalate a HIGH-STAKES legal task from a single-model route to a COUNCIL — convene the top 2–3
   models, run them independently, compare and score their agreement, and synthesize a consensus
   (or escalate to a human on material disagreement, never silently picking a winner). Vendor-neutral,
-  grounded in mid-2026 legal benchmarks; the panel re-ranks by task (drafting vs extraction vs
-  reasoning vs review vs translation). Use when a single model isn't enough: signable/filing-facing
+  grounded in late-2026 legal benchmarks; the panel re-ranks by task (drafting vs extraction vs
+  research vs agentic file work vs review vs translation). Use when a single model isn't enough: signable/filing-facing
   text, purchase/M&A agreements, recall-critical review, or anyone asking to "run a council", "get a
   second and third opinion", "consensus of models", "ensemble check", or "this is too important for
   one model". Returns a convened panel + consensus + dissent + a calibrated confidence.
@@ -69,18 +69,19 @@ Default if "just pick": **High stakes, 3-member cross-provider panel, task infer
 ## Step 2 — Convene the panel (grounded in the scorecard; the panel re-ranks by task)
 Pick **cross-provider** members with **complementary strengths**, not the top two of one family — same-family
 models share training and therefore **correlated errors**, so their agreement is weaker evidence (see
-Non-negotiables). Picks below are the scorecard's existing per-task leaders (data as of 2026-07).
+Non-negotiables). Picks below are the scorecard's existing per-task leaders (data as of 2026-11).
 
 | Task type | Council panel (2–3, cross-provider) | Why this panel | Reconciliation logic |
 |-----------|-------------------------------------|----------------|----------------------|
-| **Contract drafting** (§1) | **Opus 4.8** (Anthropic) + **Grok 4.5** (xAI) + **Gemini 3.5 Flash** (Google) | Opus leads reliability (67.6%) and *flags contradictory instructions*; Grok (58.8%) leaves sound language untouched; Flash (55.9%) a cheap third read. Alt 3rd: Fable 5 for a second high-reliability opinion. | Judgment+draft: synthesize the cleanest text; **Opus's contradiction flags win**; any protective language a member added carries over; divergent obligations → flag. |
-| **Info extraction** (§2) | **GPT 5.6 Sol** (OpenAI) + **Opus 4.8** (Anthropic) + **Grok 4.5** (xAI, when scans/OCR) | Perfectly complementary blind spots: Sol (89.7%) is best at exhaustive retrieval but **flattens conditionals** & is weak on scans; Opus (86.2%) is the dependable, conditional-preserving read; Grok has the **best scanned-doc handling**. | **Recall-critical → UNION.** Every field any member returns is a candidate; cross-check Sol's conditionals against Opus; keep singletons for human review. |
-| **Legal reasoning** (§3) | **Fable 5** (Anthropic) + **Gemini 3.1 Pro** (Google) + **GPT-5.6 Sol** (OpenAI) | Top 10 sit within ~2.9 pts — **rank is noise**, so three near-tied cross-provider reads are the honest way to test a conclusion. Value swap: Gemini 3 Flash (86.86%, cheap/fast). | Judgment: **agreement → confidence**; conflicting conclusions or cited rules → the question is genuinely contested → **escalate**, don't average. |
-| **Contract review** (§4, composite) | **Opus 4.8** (Anthropic) + **GPT 5.6 Sol** (OpenAI) + **Gemini 3 Flash / Fable 5** (Google/Anthropic) | The flagship council case: Opus for conflict-detection + redlines, Sol for exhaustive clause coverage, the third for independent risk reasoning. | **Recall-critical → UNION**, then grade the pooled findings on the **7-class all-pass acceptance test** (§6). Three of those classes *are* conflict-detection — where Opus leads and **Sol is the one to distrust**. |
-| **Legal translation** (§5) | **Gemini** (Google) + **Claude Opus** (Anthropic) + language-specific 3rd (**Qwen-MT / Cohere Aya** for Arabic, self-hostable) | No benchmark exists — directional only. Gemini wins most WMT25 pairs + long context; Claude is preferred for register/tone. | **Never auto-merge translations.** Surface every divergent rendering of a load-bearing term (negation, jurisdiction-concept, cross-reference) → the **mandatory human legal-linguist** focuses there. Council does not replace the human; it aims them. |
+| **Contract drafting** (§1) | **Opus 5.5** (Anthropic) + **Muse Spark 1.3** (Meta) + **GPT-6.1 Sol** (OpenAI) | Opus and Muse tie at the top (48.4%) from two providers. Muse costs $0.20/task, if you have access. Sol is a cheap independent third read: 25.8% task pass, but 86.3% of criteria at $0.11. Alt for Muse: GPT-6 Astra. | Judgment+draft: synthesize the cleanest text; **any contradiction a member flags wins**; protective language a member added carries over; divergent obligations → flag. |
+| **Info extraction** (§2) | **Opus 5.5** (Anthropic) + **GPT-6 Astra** (OpenAI) + **Qwen 3.8 Flash** (Qwen, self-hostable) | Opus is the clear leader (76.7%). Astra (56.7%) has the cleanest output (Form 83.5%). Qwen 3.8 Flash ties Astra at $0.03. Alt 3rd: Gemini 4 Argon (53.3%). | **Recall-critical → UNION.** Every field any member returns is a candidate. Cross-check every conditional field; keep singletons for human review. |
+| **Legal research** (§3A) | **Gemini 4 Neon** (Google) + **Opus 5 / Fable 5.1** (Anthropic) + **Muse Spark 1.3 Max** (Meta) | Top nine within 2.9 pts on Legal Research Bench, so **rank is noise** and three near-tied cross-provider reads are the honest test. Muse Max is $0.59/test. | Judgment: **agreement → confidence**; conflicting conclusions or cited rules → the question is genuinely contested → **escalate**, don't average. |
+| **Agentic file work** (§3B) | **Gemini 4 Argon** (Google) + **Muse Ember / Wonder** (Meta) + **GPT-6.2 Astra** (OpenAI) | HLAB-Vals-1.1 leaders (27.08 / 25.00 / 16.25). Claude 5.5 models rank 28th–39th here. | **UNION** of issues across deliverables. A council cannot lift a ~25% ceiling, so every deliverable gets human review. |
+| **Contract review** (§4, composite) | **Opus 5.5** (Anthropic) + **GPT-6 Astra** (OpenAI) + **Gemini 4 Argon** (Google) | The flagship council case. Opus leads extraction and redlines, Astra adds coverage and clean output, Argon adds an independent read and leads agentic multi-file work. | **Recall-critical → UNION**, then grade the pooled findings on the **7-class all-pass acceptance test** (§6). Three of those classes *are* conflict detection, which no current board measures, so the union matters most there. |
+| **Legal translation** (§5) | **Gemini 3.1 Pro / Gemini 4** (Google) + **Claude Opus** (Anthropic) + language-specific 3rd (**Qwen / Cohere Aya** or a CUNI-AR-type system for Arabic, self-hostable) | No legal-translation benchmark exists, so this is directional only. In WMT26 the Gemini line led general MT, language-specific systems reached the top cluster wherever they entered, and Claude was not entered. | **Never auto-merge translations.** Surface every divergent rendering of a load-bearing term (negation, jurisdiction-concept, cross-reference) → the **mandatory human legal-linguist** focuses there. Council does not replace the human; it aims them. |
 
-**Length override (review/extraction):** advertised context ≠ effective context. Past ~200K tokens most models
-degrade; only **Gemini 3 Deep Think** holds near 1M. For 100pp+ agreements, run each council member in a
+**Length override (review/extraction):** advertised context ≠ effective context. 1M-token context is now common,
+but recall was measured only to 200k tokens (canonical §8.2). For 100pp+ agreements, run each council member in a
 **chunk + map-reduce** pass, then reconcile — don't trust a single long-context sweep from any member.
 
 ## Step 3 — Run the panel
@@ -116,8 +117,8 @@ Two reconciliation modes, and you must pick the right one:
 - **Judgment tasks:** if converged, CONSENSUS = the shared conclusion written up from the **strongest
   reasoner's** articulation, noting it was *independently corroborated*. If split, there is **no consensus** —
   present the positions and escalate.
-- **Drafting:** if members agree on substance, synthesize the cleanest draft (usually Opus, the best drafter),
-  folding in any protective language another member caught and honoring Opus's contradiction flags. Divergent
+- **Drafting:** if members agree on substance, synthesize the cleanest draft (usually Opus 5.5, tied top drafter with the best criteria
+  coverage), folding in any protective language another member caught and honoring every contradiction flag. Divergent
   obligations → flag, don't quietly choose.
 - **Translation:** never merge — hand the human legal-linguist the members' renderings side-by-side with the
   divergent load-bearing terms highlighted.
@@ -152,5 +153,5 @@ If stakes are High: *"Re-check https://www.legalbenchmarks.ai/leaderboard and ht
 - **All-pass bar holds.** A pooled review that still misses a class of issue is incomplete, not "high-90s good."
 - **Capability ≠ controllability** (Wei Chen, Atticus Project). A convincing consensus is not permission to
   ship unsupervised. A qualified lawyer — for translation, an accredited legal translator — owns the work.
-- Deeper notes + full data: `references/scorecard.md` and repo `data/scorecard-2026-07.md` §7.
+- Deeper notes + full data: `references/scorecard.md` and repo `data/scorecard-2026-11.md` §7.
 - This routes models; it does not give legal advice.

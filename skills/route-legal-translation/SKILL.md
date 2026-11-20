@@ -1,11 +1,11 @@
 ---
 name: route-legal-translation
-version: 0.2.0
+version: 0.5.0
 description: >
   Pick the right LLM for LEGAL TRANSLATION — translating contracts, statutes, case law, and legal
   correspondence across languages, including Arabic/MENA. Vendor-neutral routing triangulated from
-  mid-2026 evidence (WMT25 human eval, SwiLTra-Bench legal-MT, multilingual-reasoning proxies,
-  ArabLegalEval). There is NO clean legal-translation leaderboard, so this vertical is directional
+  late-2026 evidence (WMT26 human eval, SwiLTra-Bench legal-MT, a first-party MENA legal-accuracy
+  run, ArabLegalEval). There is NO clean legal-translation leaderboard, so this vertical is directional
   and treats human legal-linguist review as mandatory. Asks up to 4 quick questions (language pair,
   cost, speed, privacy/certification), then recommends a primary model + fallback + what to avoid +
   what a human must verify. Use when someone asks "which model to translate this contract/statute",
@@ -53,11 +53,11 @@ Default if "just pick": **Working draft, cloud OK, balanced — with mandatory h
 
 | Situation | Primary | Why | Watch out |
 |-----------|---------|-----|-----------|
-| **Default / best register & tone** | **Claude Opus 4.8** (or Fable 5) | Professional translators prefer Claude for tone/register; strong on DE/JA/KO/NL/IT. | Not WMT's raw-accuracy #1 on every pair. |
-| **Broad language coverage / long documents** | **Gemini 3.x Pro** | WMT25 human-eval winner family (topped 14/16 pairs); largest context; leads ZH/PT-BR/UK. | Register can read flatter than Claude on some pairs. |
-| **EN↔Arabic (MENA)** | **Gemini 3.1 Pro** or **Claude Opus 4.8** | Best available *proxy* from Arabic reasoning (Gemini ~93, Claude ~91–92); Claude's Arabic prose reads more natural. | **No Arabic legal-MT benchmark exists** — proxy only. **Avoid Mistral for Arabic** (documented weak point). |
-| **Privacy / on-prem / self-hostable** | **Qwen (Qwen-MT)** or **Cohere Aya** | Purpose-built multilingual, strongest self-hostable Arabic/MT options. | Legal fidelity still needs human review; open ≠ safe unsupervised. |
-| **Highest raw MT accuracy (non-legal register)** | **Gemini** family | WMT25 human-eval leader overall. | Rankings are metric-dependent and flip between studies. |
+| **Default / best register & tone** | **Claude Opus 5.5** (or Opus 5) | Professional translators preferred Claude for tone/register on DE/JA/KO/NL/IT. *(Older-model evidence, not re-measured on 5.x.)* | Claude was **not entered** in WMT26, so it has no current MT measurement either way. |
+| **Broad language coverage / long documents** | **Gemini 3.1 Pro** (or Gemini 4) | **WMT26 (human-evaluated):** Gemini 3.1 Pro in the top cluster on 15 of 23 pairs. Wayfinder, a Gemini-based agent, led with 17. Second year running for the Gemini line. | WMT26 has no legal domain. It warns that LLM output can drift from the source in ways aggregate scores hide. |
+| **EN↔Arabic (MENA)** | **Gemini 3.1 Pro** for the translation + **Claude Opus 5** to check the legal substance | WMT26 EN→Egyptian Arabic: Gemini 3.1 Pro 83.7 vs GPT 5.5 80.8 (human post-editing 83.4). Canonical §8.3: Opus 5 was 6/6 legally correct on Gulf/Egyptian provisions asked in Arabic, against 4/6 for GPT-6 Astra. | **No Arabic legal-*translation* benchmark exists.** §8.3 measured Opus 5, not 5.5, with n=6. **Avoid Mistral for Arabic.** |
+| **Privacy / on-prem / self-hostable** | **Qwen** or **Cohere Aya**, or a language-specific fine-tune | WMT26: language-specific systems (e.g. CUNI-AR for Arabic) reached the top cluster wherever they entered. | Legal fidelity still needs human review; open ≠ safe unsupervised. |
+| **Legal terminology-heavy text** | Any of the above + a termbase | WMT26 legal-terminology study: once exposure to the test material is removed, top models "collapse toward small models". | Terminology is where MT scores overstate quality. Check every term of art. |
 
 **Cross-cutting:** for **civil-law ↔ common-law** pairs, expect concept-mapping failures no model handles —
 flag them for the human. For **statutes/legislation**, prefer the official published translation where one
@@ -79,6 +79,6 @@ VERIFY:     Negation not inverted · jurisdiction-specific concepts flagged, not
   model is explicitly a drafting aid, never the deliverable.
 - **Never present an LLM translation as certified.** Certification is a human accountability act.
 - **Directional, not benchmark-backed** — do not overstate confidence the way §1–§3 verticals allow.
-- Deeper evidence + sources (WMT25, SwiLTra-Bench, ArabLegalEval): `references/scorecard.md` and repo
-  `data/scorecard-2026-07.md`.
+- Deeper evidence + sources (WMT26, SwiLTra-Bench, ArabLegalEval): `references/scorecard.md` and repo
+  `data/scorecard-2026-11.md`.
 - Routes models, not legal advice.
