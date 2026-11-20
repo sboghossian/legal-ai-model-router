@@ -1,7 +1,7 @@
 # Legal AI Model Router
 
 **OpenRouter for legal work.** A bundle of vendor-neutral [Claude Code](https://docs.claude.com/en/docs/claude-code)
-skills that tell any LLM or router *which model to use for which legal task* — grounded in mid-2026 legal
+skills that tell any LLM or router *which model to use for which legal task* — grounded in late-2026 legal
 benchmarks, not vibes or brand loyalty.
 
 Ask "which model should I use to draft this clause / extract these obligations / research this issue / review
@@ -16,15 +16,20 @@ to avoid, and what a human must still verify.**
 
 ## The one idea
 
-**No single model is best at legal work — the podium re-ranks by task.** On mid-2026 benchmarks:
+**No single model is best at legal work — the podium re-ranks by task *and* by harness.** On the November 2026 boards:
 
-- **Contract drafting** → Claude Opus 4.8 leads (and uniquely flags contradictory instructions).
-- **Info extraction** → GPT 5.6 Sol leads (but flattens conditionals; weak on scans).
-- **Legal reasoning** → the top 10 cluster within ~3 points, so **cost and speed decide**, not rank.
+- **Contract drafting** → three-way tie at the top (Claude Opus 5.5, Claude Fable 5.1, Meta Muse Spark 1.3). Muse
+  costs about a seventh as much per task. No model completes more than half the tasks without a miss.
+- **Info extraction** → Claude Opus 5.5 leads by 10 points. Below it, a seven-way tie makes cost the decider.
+- **Legal research (agentic)** → Gemini 4 Neon tops Vals Legal Research Bench, but the top nine sit within 3
+  points, so **cost, time and access decide**, not rank.
+- **Agentic work with files** (Harvey LAB) → Gemini 4 Argon and Meta's Muse models lead. Claude 5.5 models rank
+  in the bottom third, the opposite of drafting and extraction.
 - **Contract review** → a *composite* (extraction + reasoning + drafting + conflict-detection); route by sub-task, then grade the result against a 7-class error acceptance test (Spellbook Labs SEC study).
 - **Legal translation** → no clean benchmark exists; directional, human review mandatory.
 
-Routing off a generalist leaderboard picks wrong. Route to the **task**, under the user's **constraints**, and
+Newest isn't best either: Opus 5 beats Opus 5.5 on research and Fable 5.1 beats Fable 5.2 on drafting. Routing
+off a generalist leaderboard or a version number picks wrong. Route to the **task**, under the user's **constraints**, and
 always name what a human must verify.
 
 ---
@@ -41,7 +46,7 @@ skills/
 ├── route-legal-translation/    # translate contracts / statutes / case law (incl. Arabic/MENA)
 └── route-council/              # high-stakes escalation: convene the top 2–3 models + reconcile
 data/
-└── scorecard-2026-07.md        # canonical dataset: all tables, methodology, caveats, live sources (SoT)
+└── scorecard-2026-11.md        # canonical dataset: all tables, methodology, caveats, live sources (SoT)
 ```
 
 Each `route-*` skill is self-contained (its own `references/scorecard.md`) so you can install one vertical or
@@ -145,8 +150,9 @@ work — signable/filing-facing text, full contract review, obligations extracti
 model to a **council**: [`route-council`](skills/route-council/) convenes the top **2–3 cross-provider** models,
 runs them **independently**, then reconciles.
 
-- **The panel re-ranks by task**, grounded in the scorecard: e.g. drafting → Opus 4.8 + Grok 4.5 + Gemini 3.5
-  Flash; extraction → GPT 5.6 Sol + Opus 4.8 + Grok 4.5; reasoning → Fable 5 + Gemini 3.1 Pro + GPT-5.6 Sol.
+- **The panel re-ranks by task**, grounded in the scorecard: e.g. drafting → Opus 5.5 + Muse Spark 1.3 +
+  GPT-6.1 Sol; extraction → Opus 5.5 + GPT-6 Astra + Qwen 3.8 Flash; research → Gemini 4 Neon + Opus 5 +
+  Muse Spark 1.3 Max; agentic file work → Gemini 4 Argon + Muse Ember + GPT-6.2 Astra.
   Cross-provider on purpose — same-family models share correlated errors, so their agreement is weaker evidence.
 - **Two reconciliation modes.** Recall-critical work (extraction, review) takes the **union** of findings —
   every issue any member flags is a candidate, never majority-voted away. Judgment work (a conclusion, a term)
@@ -163,25 +169,31 @@ runs them **independently**, then reconciles.
 ## Evidence base
 
 The data is triangulated from public benchmarks and independent research, all cited in
-[`data/scorecard-2026-07.md`](data/scorecard-2026-07.md):
+[`data/scorecard-2026-11.md`](data/scorecard-2026-11.md):
 
-- **legalbenchmarks.ai** — Contract Drafting & Info Extraction (lawyer-checklist, all-pass grading).
-- **Vals AI × Stanford CodeX — LegalBench** — legal reasoning across 124 models.
-- **Harvey — Legal Agent Benchmark (LAB)** — task-design standard for agentic legal work.
+- **legalbenchmarks.ai** — Contract Workflows & Data Extraction (lawyer-written criteria, all-pass over two
+  attempts on an agentic harness since 2026-08).
+- **Vals AI — Legal Research Bench** — agentic US legal research; the primary research signal.
+- **Harvey — Legal Agent Benchmark (LAB)** — long-horizon legal work with files, scored three ways: HLAB-Vals-1.1
+  (Vals), LAB-AA v1.1 (Artificial Analysis) and Harvey's own baselines.
+- **Vals Legal Index** — composite weighted by US law-office revenue (context); **Vals LegalBench** — saturated,
+  kept as a footnote.
 - **Spellbook Labs — SEC contract-error study** — ~60% of 3,019 filed contracts carry a drafting issue
   (stable over 20 years; deal/M&A paper 12–15% high-risk). Ranks no models; it's the *acceptance test*
   contract review is graded against, and the risk prior that elevates M&A stakes.
 - **Wei Chen / The Atticus Project** — CUAD, MAUD, ACORD; the "demand public benchmarking" thesis and the
   *capability ≠ controllability* principle.
-- **WMT25, SwiLTra-Bench, ArabLegalEval** — the (thin) legal-translation evidence.
-- **Artificial Analysis, LMArena, SWE-bench, HealthBench** — generalist cross-checks and the "verticals
-  re-rank the podium" lesson.
+- **WMT26, SwiLTra-Bench, ArabLegalEval** — the (thin) legal-translation evidence.
+- **Vals Index, Artificial Analysis** — generalist cross-checks and the "verticals re-rank the podium" lesson.
+- **Legal-specific models** (Astra for Law, GLM-Legal, Harvey Tenet, Thomson 1.0) — listed as context with their
+  independent scores, never as default picks (scorecard §9).
 
 ### Honest limitations
 
-- Numbers are a **point-in-time prior** (snapshot **2026-07**) from boards that change monthly and disagree.
-- legalbenchmarks.ai is **English-only, US/UK-skewed, single-turn**, LLM-judge-graded. Vals LegalBench is
-  multiple-choice reasoning. **Non-US, non-English, multi-turn, and long-horizon work is under-measured.**
+- Numbers are a **point-in-time prior** (snapshot **2026-11**) from boards that change monthly and disagree,
+  sometimes sharply: Claude leads one harness and trails another.
+- legalbenchmarks.ai is **English-only, US/UK-skewed**, LLM-judge-graded, and no longer names its graders. The
+  Vals legal boards are US-law. **Non-US, non-English, multi-turn and civil-law work is under-measured.**
 - **Legal translation has no reliable public leaderboard** — that vertical is explicitly directional.
 - **Hallucinated citations/clauses are the cardinal legal-AI risk.** Every route ends with a verify step.
 - **The optional classifier measures calibration, not correctness.** Measured, not assumed (2026-09-21,
@@ -204,7 +216,7 @@ The data is triangulated from public benchmarks and independent research, all ci
 
 Benchmarks drift. When you refresh:
 
-1. Edit **`data/scorecard-2026-07.md`** (the single source of truth) — update tables, bump the date, rename the
+1. Edit **`data/scorecard-2026-11.md`** (the single source of truth) — update tables, bump the date, rename the
    file to the new month.
    *Exception:* a section that adds new data **without** refreshing the third-party boards (like §6, §7 and §8)
    keeps the existing snapshot date and carries its own date in its heading — renaming the file would falsely

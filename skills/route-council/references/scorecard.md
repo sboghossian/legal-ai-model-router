@@ -1,24 +1,25 @@
-# Council / Consensus Mode — extended notes (data as of 2026-07; §8 first-party run 2026-09)
+# Council / Consensus Mode — extended notes (data as of 2026-11; §8 first-party run 2026-09)
 
-> Slice of the canonical dataset. Full cross-vertical data + update guide: repo `data/scorecard-2026-07.md`.
+> Slice of the canonical dataset. Full cross-vertical data + update guide: repo `data/scorecard-2026-11.md`.
 > Numbers are a point-in-time prior, not a verdict — re-check the live sources for high-stakes routing.
 
 Council mode ranks **no new models**. It composes the per-task leaders that the drafting (§1), extraction
-(§2), reasoning (§3), review (§4) and translation (§5) sections already establish, and adds the *rules* for
+(§2), research and agentic work (§3), review (§4) and translation (§5) sections already establish, and adds the *rules* for
 running 2–3 of them together on High-stakes work. Nothing here changes a single-model pick.
 
-## 7. Council panels (composed from §1–§5)
+## 7. Council panels (composed from §1–§5, 2026-11 data)
 
 Pick **cross-provider** members with **complementary blind spots**. Same-family models (e.g. Opus + Fable,
 both Anthropic) share training and therefore correlated errors — their agreement is weaker evidence.
 
 | Task type | Council panel (2–3, cross-provider) | Complementarity (from the scorecard) |
 |-----------|-------------------------------------|--------------------------------------|
-| **Contract drafting** (§1) | **Opus 4.8** (Anthropic) + **Grok 4.5** (xAI) + **Gemini 3.5 Flash** (Google) | Opus 67.6% & flags contradictions · Grok 58.8%, leaves sound language alone · Flash 55.9%, cheap independent read. Alt 3rd: Fable 5 (61.8%). |
-| **Info extraction** (§2) | **GPT 5.6 Sol** (OpenAI) + **Opus 4.8** (Anthropic) + **Grok 4.5** (xAI, add when scans) | Sol 89.7% exhaustive but **flattens conditionals** & weak on scans · Opus 86.2% dependable, conditional-preserving · Grok **best scanned-doc handling**. |
-| **Legal reasoning** (§3) | **Fable 5** (Anthropic) + **Gemini 3.1 Pro** (Google) + **GPT-5.6 Sol** (OpenAI) | Top 10 within ~2.9 pts (88.56 / 87.40 / 86.97) — rank is noise, so three near-tied cross-provider reads. Value swap: Gemini 3 Flash (86.86%, $0.5/$3, 4.67s). |
-| **Contract review** (§4) | **Opus 4.8** (Anthropic) + **GPT 5.6 Sol** (OpenAI) + **Gemini 3 Flash / Fable 5** | Opus for conflict-detection + redlines · Sol for exhaustive clause coverage (verify conditionals) · third for independent risk reasoning. |
-| **Legal translation** (§5) | **Gemini** (Google) + **Claude Opus** (Anthropic) + **Qwen-MT / Cohere Aya** (Arabic, self-hostable) | Directional only — no benchmark. Gemini won 14/16 WMT25 pairs + long context · Claude preferred for register/tone. Human legal-linguist mandatory. |
+| **Contract drafting** (§1) | Opus 5.5 (Anthropic) + Muse Spark 1.3 (Meta) + GPT-6.1 Sol (OpenAI) | Opus and Muse tie at 48.4% from two providers; Muse costs $0.20/task. Sol passes only 25.8% of tasks but meets 86.3% of criteria at $0.11, so it is a cheap independent read. If Muse is not accessible, use GPT-6 Astra (87.1% criteria). Fable 5.1 is also tied, but it shares Opus's family and its blind spots. |
+| **Info extraction** (§2) | Opus 5.5 (Anthropic) + GPT-6 Astra (OpenAI) + Qwen 3.8 Flash (Qwen, self-hostable) | Opus leads at 76.7%. Astra (56.7%) has the best extraction Form (83.5%). Qwen 3.8 Flash ties Astra at $0.03/task. Alternative third: Gemini 4 Argon (53.3%, 86.2% criteria). |
+| **Legal research** (§3A) | Gemini 4 Neon (Google) + Opus 5 or Fable 5.1 (Anthropic) + Muse Spark 1.3 Max (Meta) | Three providers at 56.25 / 55.29 / 55.29, inside a top nine that spans 2.9 points, so rank is noise. Muse Max costs $0.59/test. Swap: Astra for Law (53.85%) if you already have access (§9). |
+| **Agentic file work** (§3B) | Gemini 4 Argon (Google) + Muse Ember or Wonder (Meta) + GPT-6.2 Astra (OpenAI) | HLAB-Vals-1.1 task pass 27.08 / 25.00 (Wonder 23.75) / 16.25. A council does not lift a ceiling near 25%. Every deliverable gets human review. |
+| **Contract review** (§4) | Opus 5.5 (Anthropic) + GPT-6 Astra (OpenAI) + Gemini 4 Argon (Google) | Opus leads extraction and redlines. Astra adds coverage and clean Form. Argon leads agentic file work, so it is the best third reader for a multi-document review. |
+| **Legal translation** (§5) | Gemini 3.1 Pro / Gemini 4 (Google) + Claude Opus (Anthropic) + a language-specific system (Qwen, Cohere Aya, CUNI-AR-type) | Directional only. In WMT26 the Gemini line led general MT, language-specific systems reached the top cluster wherever they entered, and Claude was not entered. Never auto-merge. A human legal-linguist is mandatory. |
 
 ## Reconciliation — two modes
 
@@ -47,9 +48,11 @@ both Anthropic) share training and therefore correlated errors — their agreeme
    same-family or self-hostable-only panel, state the weakened independence.
 3. **Cost & latency.** Council is **2–3× compute + slower**. It exists only for High stakes; never council
    low-stakes triage, high-volume batch, or real-time work.
-4. **Length still bites.** Advertised context ≠ effective context; past ~200K tokens most members degrade
-   (only Gemini 3 Deep Think holds near 1M). For 100pp+ docs, run each member chunk + map-reduce, then reconcile.
-5. **Routing collapse guard.** A router that always picks one dominant model has stopped routing (§caveat 5).
+4. **Length still bites.** 1M-token context is now common, but advertised context ≠ effective context, and
+   §8.2 measured recall only to 200k tokens. For 100pp+ docs, run each member chunk + map-reduce, then reconcile.
+5. **Harness decides the panel.** The same Claude models lead single-pass drafting and extraction and trail
+   agentic file work (§3B, caveat 9). Convene from the row that matches how the members will run.
+6. **Routing collapse guard.** A router that always picks one dominant model has stopped routing (§caveat 5).
    Council is the counter-move for the High-stakes tail — not a default for everything.
 
 ## 8. First-party measured run (2026-09) — what it changes here
@@ -92,14 +95,19 @@ it on direction and mechanism; trust the third-party sections on relative rank. 
 
 ## Live sources — re-check before high-stakes routing
 
-- Contract Drafting & Info Extraction: https://www.legalbenchmarks.ai/leaderboard (+ /research/phase-2-research)
-- Legal reasoning (LegalBench, 124 models, live): https://www.vals.ai/benchmarks/legal_bench
-- Agentic legal task design: https://www.harvey.ai/blog/introducing-harveys-legal-agent-benchmark
+- Contract Drafting & Info Extraction (agentic cycle, since 2026-08): https://www.legalbenchmarks.ai/leaderboard/models · method: https://www.legalbenchmarks.ai/methodology
+- Agentic legal research (primary research signal): https://www.vals.ai/benchmarks/legal_research
+- Agentic legal work with files (HLAB-Vals-1.1): https://www.vals.ai/benchmarks/hlab
+- Composite by practice area (Vals Legal Index): https://www.vals.ai/benchmarks/legal_index
+- Legal reasoning MCQ (LegalBench, saturated): https://www.vals.ai/benchmarks/legal_bench
+- Harvey LAB-AA v1.1: https://artificialanalysis.ai/evaluations/harvey-lab-aa · Harvey's own results: https://www.harvey.ai/blog/legal-agent-benchmark-initial-results · task design: https://www.harvey.ai/blog/introducing-harveys-legal-agent-benchmark
+- General MT (WMT26 Findings): https://aclanthology.org/2026.wmt-main.48.pdf
+- §8 first-party run (2026-09) — harness, raw answers and per-suite scores: `legal-llm-benchmark/astra/`
+  (`core_run.py`, `suites.py`, `analyse.py`); report: https://claude.ai/code/artifact/cb794fc9-b9e3-45f0-9437-8e3eccc88f7e
 - Contract error base rates (SEC study): https://spellbook.com/labs
 - "The Path to Better Legal AI: Benchmarks" (Wei Chen): https://www.linkedin.com/pulse/path-better-legal-ai-benchmarks-wei-chen-jpksc
 - Atticus open datasets (CUAD/MAUD/ACORD): https://www.atticusprojectai.org/
-- Generalist cross-check: https://artificialanalysis.ai/leaderboards/models · https://lmarena.ai · https://www.swebench.com
+- Generalist cross-check: https://www.vals.ai/benchmarks/vals_index · https://artificialanalysis.ai/leaderboards/models
+- Long-context efficiency (Mamba vs transformers on long legal docs): https://arxiv.org/abs/2509.00141
 
-**Snapshot date: 2026-07.** If today is >2 months later, treat ranks as suspect and re-pull the live boards.
-- §8 first-party run (2026-09) — harness, raw answers and per-suite scores: `legal-llm-benchmark/astra/`
-  (`core_run.py`, `suites.py`, `analyse.py`); report: https://claude.ai/code/artifact/cb794fc9-b9e3-45f0-9437-8e3eccc88f7e
+**Snapshot date: 2026-11 (boards re-pulled 2026-11-20).** If today is more than 2 months later, treat the ranks as suspect and re-pull the live boards.

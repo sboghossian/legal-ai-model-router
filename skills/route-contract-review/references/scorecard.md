@@ -1,21 +1,35 @@
-# Contract Review — extended notes (data as of 2026-07; §8 first-party run 2026-09)
+# Contract Review — extended notes (data as of 2026-11; §8 first-party run 2026-09)
 
-> Slice of the canonical dataset. Full cross-vertical data + update guide: repo `data/scorecard-2026-07.md`.
+> Slice of the canonical dataset. Full cross-vertical data + update guide: repo `data/scorecard-2026-11.md`.
 > Numbers are a point-in-time prior, not a verdict — re-check the live sources for high-stakes routing.
 
 ## 4. Contract Review
 
-**No single public benchmark isolates "contract review."** It is a *composite* skill = find the clauses
-(**Info Extraction**, §2) + judge risk/deviation from standard (**legal reasoning**, §3) + propose redlines
-(**Contract Drafting**, §1) + catch internal contradictions (**conflict detection**). Route by composing
-those three tables and weighting toward the sub-task that dominates the specific review.
+**No single public benchmark isolates "contract review."** It is a *composite* skill: find the clauses
+(**Info Extraction**, §2), judge risk and deviation from standard (**legal reasoning**, §3), propose redlines
+(**Contract Drafting**, §1), and catch internal contradictions (**conflict detection**). Route by composing
+those tables and weighting toward the sub-task that dominates the specific review.
 
 **Derived guidance (composite, not a measured leaderboard)**
-- **Extraction-heavy review** (find every clause of type X, build an obligations matrix): weight §2 → **GPT 5.6 Sol** leads, but **verify conditionals** (it flattens them) and **Opus 4.8** if you need the safer, more dependable read.
-- **Risk/deviation analysis** (is this indemnity market? what's the exposure?): weight §3 → top cluster is a wash on accuracy; pick **Gemini 3 Flash** for cost/speed or **Fable 5 / Opus 4.8** for the safest reasoning.
-- **Redline drafting** (rewrite to protect the client): weight §1 → **Opus 4.8** (best drafter *and* best at flagging contradictions) or **Grok 4.5** (leaves sound language alone, cheaper).
-- **Conflict detection across a long agreement**: **Opus 4.8** is the documented standout; **avoid GPT 5.6 Sol** (worst at silently drafting through contradictions).
-- **Long agreements (100+ pages):** advertised context ≠ effective context. Only **Gemini 3 Deep Think** holds quality near 1M tokens; most models degrade past ~200–400K. Chunk + map-reduce for the rest.
+- **Extraction-heavy review** (find every clause of type X, build an obligations matrix): weight §2. **Opus 5.5** leads
+  by 10 points. If cost matters, the 56.7% tier (Haiku 5.5, Opus 5, GPT-6 Astra, Qwen 3.8 Flash) is the step down.
+- **Risk/deviation analysis** (is this indemnity market? what's the exposure?): weight §3A. The top nine are within
+  ~3 points. **Muse Spark 1.3 Max** is the value pick if accessible; **Opus 5 / Gemini 4 Neon** are the safe picks.
+- **Redline drafting** (rewrite to protect the client): weight §1. **Opus 5.5** or **Fable 5.1**, or **Muse Spark 1.3** at
+  ~1/7 the cost.
+- **Review as an agentic, multi-file job** (a data room, a folder of ancillaries, deliverables written back to
+  docx/xlsx): weight §3B. **Gemini 4 Argon** leads HLAB, and Claude 5.5 models rank low there. Test on your own harness
+  before trusting either.
+- **Conflict detection across a long agreement:** no current board isolates it. *(July, historical: Opus 4.8 was the
+  documented standout and GPT 5.6 Sol the worst.)* Treat conflict detection as **unmeasured on current models**. Rely on
+  the §6 acceptance test, where three of seven classes *are* conflict detection.
+- **Long agreements (100+ pages):** advertised context of 1M tokens is now common (Claude 5.5, Gemini 4, Kimi K3).
+  Advertised is not effective. §8.2 measured a 9/9 multi-hop pass at 25k/100k/200k tokens for three 2026-09 models only.
+  Past ~200K, chunk and map-reduce unless you have measured your model at that depth.
+- **Acceptance test (model-agnostic):** whichever model you route, grade its output against the 7 Spellbook error classes
+  (§6) on an *all-pass* basis, and auto-elevate purchase/M&A stakes to High.
+
+---
 
 ## Spellbook — contract error base rates (the review acceptance test)
 
@@ -27,17 +41,23 @@ risk prior for setting stakes.
 - **The 7 error classes a reviewer must catch (verbatim):** clear drafting mistakes · internal inconsistencies · undefined terms · broken cross-references · broken definitions · ambiguities · clauses that may not work as written.
 - **Base rates:** ~60% of contracts had ≥1 issue; ~3.1% high-risk overall; stable at **~1.1–1.3 issues/contract across 20 years** (AI-era drafting no cleaner); company spread 0.18→3.30.
 - **Contract-type risk prior:** note purchase agreements ~15% high-risk, stock & asset purchase agreements ~12% — deal/M&A paper runs ~4–5× the baseline. Default those to **High stakes**.
-- **Routing consequence:** grade the routed model's output against the 7 classes on an **all-pass** basis. Three of them (internal inconsistencies, broken cross-refs, broken definitions) *are* the conflict-detection failure mode → **Opus 4.8** for conflict-sensitive review, **avoid GPT 5.6 Sol** there.
+- **Routing consequence:** grade the routed model's output against the 7 classes on an **all-pass** basis. Three of them (internal inconsistencies, broken cross-refs, broken definitions) *are* the conflict-detection failure mode, which no current board measures. *(July, historical: Opus 4.8 led conflict-sensitive review and GPT 5.6 Sol was the one to avoid; not re-measured on successors.)*
 
 ---
 
 ## Generalist context (why not to route off a generalist leaderboard)
 
-- **Verticals re-rank the podium.** The Artificial Analysis intelligence-index leader (Fable 5 ~60, GPT-5.6 Sol ~58–59, Opus 4.8 ~56) is *not* the leader on every legal cut — e.g. Opus 4.8 tops Contract Drafting while GPT 5.6 Sol tops Info Extraction. Never route a legal task off a generalist board.
-- **Saturation hides gaps.** GPQA/AIME sit at 94–100% for the top tier — zero routing signal. **HLE** (~53% Fable 5, ~50% Grok 4 Heavy, ~46% Opus 4.8) is the one reasoning test still separating models.
-- **Advertised vs effective context diverges 30–60 points past ~200K tokens.** Only Gemini 3 Deep Think holds near its 1M spec.
-- **Cost floor:** Chinese open-weight models (DeepSeek V4 Flash ~$0.06/M, Qwen) are 10–50× cheaper than closed frontier — relevant for on-prem/privacy and high-volume triage, at a reliability cost on legal tasks.
-- **Scaffold ≠ model** on agentic benchmarks (GAIA scores swing ~30 pts by harness). Judge the *system*, not the model, for agentic legal research.
+- **The verticals re-rank the podium.** On the generalist Vals Index (v2.2, 2026-11-18), Claude Fable 5.2 ranks
+  **#1 (71.31%)**. On the legal boards it ranks **#7 on drafting, #22 on legal research and #24 on the Legal
+  Index**. Gemini 4 Neon (70.87%), Sonnet 5.5 (70.85%) and Opus 5.5 (70.14%) sit within 1.2 points of it on the
+  generalist board but far apart on the legal ones. Never route a legal task off a generalist board.
+- **1M-token context is now standard** (Claude 5.5, Gemini 4, Kimi K3), but advertised context is not effective
+  context. §8.2 measured multi-hop recall only up to 200k tokens. Above that, measure your own model or chunk.
+- **The cost floor is open-weight.** On legalbenchmarks.ai, Qwen 3.8 Flash costs $0.03/task and ties GPT-6 Astra on
+  extraction, and DeepSeek V4 Flash costs $0.01/task on drafting. That matters for on-prem, privacy and
+  high-volume triage. Reliability is uneven, though: Qwen 3.8 Flash meets only 49.1% of drafting criteria.
+- **Scaffold ≠ model.** The split between §1–§2 and §3B is the legal version of this effect: the same Claude
+  models lead single-pass work and trail agentic file work. Judge the *system* (model + harness + tools).
 
 ---
 
@@ -69,26 +89,33 @@ it on direction and mechanism; trust the third-party sections on relative rank. 
 
 1. **Capability ≠ controllability** (Wei Chen, Atticus Project). A high benchmark score does not mean a model stays in scope, cites truthfully, or is safe to deploy unsupervised. Governance is a separate axis from raw performance.
 2. **All-pass reality** (Harvey). A review that catches 8 of 10 risks is not 80% useful — it is materially incomplete. Route for reliability on high-stakes work, not average quality.
-3. **Grading is imperfect.** legalbenchmarks.ai reliability is scored by a *single* LLM judge (Claude Sonnet 4.6); usefulness by a 2-judge panel (~82% agreement). Their own bias check: Sonnet tops neither board and Anthropic models rank lowest on length — evidence against self-grading favoritism, but LLM-judged scores are still not ground truth.
-4. **Coverage is narrow.** legalbenchmarks.ai is English-only, US/UK-skewed, single-turn, one run per task (no drift/consistency testing), with a private task set. Vals LegalBench is multiple-choice reasoning, not drafting. **Non-US, non-English, multi-turn, and long-horizon work is under-measured.** The consistency gap is now measured rather than assumed — see §8.4: no frontier model reproduced an identical answer across repeats, with or without a seed.
+3. **Grading is imperfect, and less transparent than in July.** legalbenchmarks.ai's November board does **not name its graders**. The July snapshot named one LLM judge, Claude Sonnet 4.6. Vals Legal Research Bench uses an LLM judge, reported in its paper (arXiv 2610.00609) as GPT 5.4; this was not verified here. Harvey LAB-AA uses a three-judge panel that includes Claude Opus 5.5, so an Anthropic model helps grade Anthropic models. LLM-judged scores are not ground truth.
+4. **Coverage is narrow.** legalbenchmarks.ai is English-only, US/UK-skewed, single-turn and private. It now runs two attempts per task, so it tests consistency a little. The Vals legal boards cover US law. WMT26 has no legal domain. **Non-US, non-English, multi-turn and civil-law work is under-measured.** The consistency gap is now measured rather than assumed — see §8.4: no frontier model reproduced an identical answer across repeats, with or without a seed.
 5. **Benchmark drift & routing collapse.** Numbers here go stale monthly; and a router that always picks one dominant model has stopped routing. Re-validate when new frontier models ship.
 6. **Silent quality regression.** Cost savings show up instantly on the bill; quality loss shows up days later in the work product. Gate any cost-driven downgrade behind a spot-check.
 7. **Price the answer, not the token** (§8.1). Verbosity varies more between models than list price does — a model billing 2x per token can cost half as much per answer. Every `Cost/task` figure above is only comparable between models of similar output length, and reasoning tokens bill at the completion rate whether or not the reader sees them.
 8. **Table stakes have moved** (§8.2). Structured output, tool selection, and rejecting obviously fabricated citations are now perfect across frontier models and cannot separate them. A routing rule or vendor claim resting on any of these is measuring a solved problem. The live failure mode is subtler: a **correct citation attached to a misstated rule** (§8.3), which a citation-existence checker passes.
+9. **The boards disagree by harness, so route on the board that matches your deployment.** Claude 5.5 models lead single-pass drafting and extraction (§1–§2) and rank 28th–39th on agentic file work (§3B). If the model gets the documents in context and returns one answer, weight §1–§2. If it runs as an agent with tools, files and a long horizon, weight §3A–§3B. Why Claude drops on HLAB is **untested** (§3B).
+10. **Newest ≠ best.** Fable 5.2 trails Fable 5.1 on drafting at twice the cost. Opus 5 beats Opus 5.5 on research at under a third of the cost. Haiku 5.5 beats Sonnet 5.5 on drafting and extraction. Never upgrade a route because a version number went up. Check the row.
+11. **Variant names are different systems.** Muse Spark 1.3 Max scores 55.29% on Legal Research Bench and Muse Spark 1.3 scores 40.87%. Route on the exact name the board printed, and confirm that your API serves that variant.
 
 ---
 
 ## Live sources — re-check before high-stakes routing
 
-- Contract Drafting & Info Extraction: https://www.legalbenchmarks.ai/leaderboard (+ /research/phase-2-research)
-- Legal reasoning (LegalBench, 124 models, live): https://www.vals.ai/benchmarks/legal_bench
-- Agentic legal task design: https://www.harvey.ai/blog/introducing-harveys-legal-agent-benchmark
+- Contract Drafting & Info Extraction (agentic cycle, since 2026-08): https://www.legalbenchmarks.ai/leaderboard/models · method: https://www.legalbenchmarks.ai/methodology
+- Agentic legal research (primary research signal): https://www.vals.ai/benchmarks/legal_research
+- Agentic legal work with files (HLAB-Vals-1.1): https://www.vals.ai/benchmarks/hlab
+- Composite by practice area (Vals Legal Index): https://www.vals.ai/benchmarks/legal_index
+- Legal reasoning MCQ (LegalBench, saturated): https://www.vals.ai/benchmarks/legal_bench
+- Harvey LAB-AA v1.1: https://artificialanalysis.ai/evaluations/harvey-lab-aa · Harvey's own results: https://www.harvey.ai/blog/legal-agent-benchmark-initial-results · task design: https://www.harvey.ai/blog/introducing-harveys-legal-agent-benchmark
+- General MT (WMT26 Findings): https://aclanthology.org/2026.wmt-main.48.pdf
+- §8 first-party run (2026-09) — harness, raw answers and per-suite scores: `legal-llm-benchmark/astra/`
+  (`core_run.py`, `suites.py`, `analyse.py`); report: https://claude.ai/code/artifact/cb794fc9-b9e3-45f0-9437-8e3eccc88f7e
 - Contract error base rates (SEC study): https://spellbook.com/labs
 - "The Path to Better Legal AI: Benchmarks" (Wei Chen): https://www.linkedin.com/pulse/path-better-legal-ai-benchmarks-wei-chen-jpksc
 - Atticus open datasets (CUAD/MAUD/ACORD): https://www.atticusprojectai.org/
-- Generalist cross-check: https://artificialanalysis.ai/leaderboards/models · https://lmarena.ai · https://www.swebench.com
+- Generalist cross-check: https://www.vals.ai/benchmarks/vals_index · https://artificialanalysis.ai/leaderboards/models
 - Long-context efficiency (Mamba vs transformers on long legal docs): https://arxiv.org/abs/2509.00141
 
-**Snapshot date: 2026-07.** If today is >2 months later, treat ranks as suspect and re-pull the live boards.
-- §8 first-party run (2026-09) — harness, raw answers and per-suite scores: `legal-llm-benchmark/astra/`
-  (`core_run.py`, `suites.py`, `analyse.py`); report: https://claude.ai/code/artifact/cb794fc9-b9e3-45f0-9437-8e3eccc88f7e
+**Snapshot date: 2026-11 (boards re-pulled 2026-11-20).** If today is more than 2 months later, treat the ranks as suspect and re-pull the live boards.
